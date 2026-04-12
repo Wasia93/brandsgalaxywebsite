@@ -29,7 +29,7 @@ export default function Navbar() {
         {/* Logo + Brand Name */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
           <img
-            src="http://localhost:8000/static/products/f7d0690b740a4d8a8f0444de8bffe6a2.jpeg"
+            src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/static/products/f7d0690b740a4d8a8f0444de8bffe6a2.jpeg`}
             alt="Brands Galaxy"
             className="h-20 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; }}
