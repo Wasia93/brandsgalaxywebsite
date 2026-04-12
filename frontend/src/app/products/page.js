@@ -45,6 +45,13 @@ export default function ProductsPage() {
       .finally(() => setLoading(false));
   }, [filters]);
 
+  // Sync filters when URL params change (e.g. navbar links)
+  useEffect(() => {
+    const category = searchParams.get('category') || '';
+    const is_featured = searchParams.get('is_featured') === 'true' ? true : undefined;
+    setFilters(f => ({ ...f, category, is_featured }));
+  }, [searchParams]);
+
   useEffect(() => {
     productsAPI.getCategories().then((r) => setCategories(r.data)).catch(() => {});
     productsAPI.getBrands().then((r) => setBrands(r.data)).catch(() => {});
