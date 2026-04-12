@@ -44,9 +44,9 @@ export default function CartPage() {
             const itemPrice = Number(item.variantPrice ?? item.discount_price ?? item.price);
             const imageSrc = item.images?.[0];
             return (
-              <div key={item.cartKey} className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex gap-4">
+              <div key={item.cartKey} className="bg-gray-900 border border-gray-800 rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4">
                 {/* Image */}
-                <div className="w-20 h-20 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                   {imageSrc ? (
                     <img src={`${API_URL}${imageSrc}`} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
                   ) : (
@@ -74,9 +74,9 @@ export default function CartPage() {
                     <Trash2 size={16} />
                   </button>
                   <div className="flex items-center border border-gray-700 rounded-lg overflow-hidden text-sm">
-                    <button onClick={() => updateQuantity(item.cartKey, item.quantity - 1)} className="px-3 py-1 hover:bg-gray-800">−</button>
-                    <span className="px-3 py-1 text-white">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.cartKey, item.quantity + 1)} className="px-3 py-1 hover:bg-gray-800">+</button>
+                    <button onClick={() => updateQuantity(item.cartKey, item.quantity - 1)} className="px-3 py-2 hover:bg-gray-800 min-w-[40px]">−</button>
+                    <span className="px-3 py-2 text-white">{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.cartKey, item.quantity + 1)} className="px-3 py-2 hover:bg-gray-800 min-w-[40px]">+</button>
                   </div>
                   <p className="text-sm text-gray-400">{formatPrice(itemPrice * item.quantity)}</p>
                 </div>

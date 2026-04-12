@@ -34,9 +34,9 @@ export default function Navbar() {
             className="h-20 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <div className="flex flex-col leading-tight">
-            <span className="text-gold  font-bold tracking-widest text-lg uppercase">Brands</span>
-            <span className="text-gold font-bold tracking-widest text-lg uppercase">Galaxy</span>
+          <div className="hidden xs:flex flex-col leading-tight">
+            <span className="text-yellow-400 font-bold tracking-widest text-base sm:text-lg uppercase">Brands</span>
+            <span className="text-yellow-400 font-bold tracking-widest text-base sm:text-lg uppercase">Galaxy</span>
           </div>
         </Link>
 
@@ -101,17 +101,17 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-800 bg-black px-4 py-4 flex flex-col gap-4 text-sm text-gray-300">
-          <Link href="/products" onClick={() => setMenuOpen(false)} className="hover:text-yellow-400 transition-colors">Shop All</Link>
-          <Link href="/products?is_featured=true" onClick={() => setMenuOpen(false)} className="hover:text-yellow-400 transition-colors">Featured</Link>
-          <Link href="/products?category=skincare" onClick={() => setMenuOpen(false)} className="hover:text-yellow-400 transition-colors">Skincare</Link>
-          <Link href="/products?category=makeup" onClick={() => setMenuOpen(false)} className="hover:text-yellow-400 transition-colors">Makeup</Link>
+        <div className="md:hidden border-t border-gray-800 bg-black px-4 py-2 flex flex-col text-sm text-gray-300">
+          <Link href="/products" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Shop All</Link>
+          <Link href="/products?is_featured=true" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Featured</Link>
+          <Link href="/products?category=skincare" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Skincare</Link>
+          <Link href="/products?category=makeup" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Makeup</Link>
           {token ? (
-            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="text-left text-red-400">
+            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="py-3.5 text-left text-red-400">
               Logout
             </button>
           ) : (
-            <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="hover:text-yellow-400 transition-colors">Login / Register</Link>
+            <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="py-3.5 hover:text-yellow-400 transition-colors">Login / Register</Link>
           )}
         </div>
       )}

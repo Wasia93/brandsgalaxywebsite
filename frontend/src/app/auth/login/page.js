@@ -35,11 +35,11 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-heading text-4xl font-bold mb-2">Welcome Back</h1>
+          <h1 className="font-heading text-3xl sm:text-4xl font-bold mb-2">Welcome Back</h1>
           <p className="text-gray-500">Sign in to your Brands Galaxy account</p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
+        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm text-gray-400 mb-1.5">Email Address</label>

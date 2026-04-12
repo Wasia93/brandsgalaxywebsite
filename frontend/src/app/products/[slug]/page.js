@@ -37,11 +37,11 @@ function ImageCarousel({ images, name }) {
       {total > 1 && (
         <>
           <button onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
             <ChevronLeft size={20} />
           </button>
           <button onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
             <ChevronRight size={20} />
           </button>
 
@@ -149,9 +149,9 @@ export default function ProductDetailPage() {
         <ArrowLeft size={16} /> Back
       </button>
 
-      <div className="grid md:grid-cols-2 gap-12">
+      <div className="grid md:grid-cols-2 gap-6 md:gap-12">
         {/* ── Image Carousel ── */}
-        <div className="relative bg-gray-900 rounded-2xl overflow-hidden h-96 md:h-[520px]">
+        <div className="relative bg-gray-900 rounded-2xl overflow-hidden h-64 sm:h-80 md:h-[520px]">
           <ImageCarousel images={product.images || []} name={product.name} />
           {product.discount_price && !hasVariants && (
             <span className="absolute top-4 left-4 bg-red-600 text-white text-sm px-3 py-1 rounded-lg font-semibold z-30">SALE</span>
@@ -161,7 +161,7 @@ export default function ProductDetailPage() {
         {/* ── Details ── */}
         <div className="flex flex-col">
           <p className="text-yellow-400 uppercase tracking-widest text-sm mb-2">{product.brand}</p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{product.name}</h1>
+          <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{product.name}</h1>
 
           {/* Rating */}
           {Number(product.rating_count) > 0 && (
@@ -175,7 +175,7 @@ export default function ProductDetailPage() {
 
           {/* Price — updates live when size is selected */}
           <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-yellow-400 text-4xl font-bold">{formatPrice(displayPrice)}</span>
+            <span className="text-yellow-400 text-2xl sm:text-3xl md:text-4xl font-bold">{formatPrice(displayPrice)}</span>
             {originalPrice && (
               <>
                 <span className="text-gray-500 text-xl line-through">{formatPrice(originalPrice)}</span>

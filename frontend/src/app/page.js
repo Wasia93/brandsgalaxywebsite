@@ -67,34 +67,34 @@ function PremiumHero({ products }) {
 
             {/* headline */}
             <div key={idx + 'title'} className="animate-[fadeSlideUp_0.55s_ease_forwards]">
-              <h1 className="font-heading text-6xl md:text-7xl font-bold leading-[1.06] mb-5 tracking-tight">
+              <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.06] mb-5 tracking-tight">
                 <span className="text-white block">{h.title}</span>
                 <span className="gold-gradient block">{h.accent}</span>
               </h1>
             </div>
 
             <div key={idx + 'sub'} className="animate-[fadeSlideUp_0.6s_ease_forwards]">
-              <p className="text-gray-400 text-lg leading-relaxed mb-8 max-w-md">{h.sub}</p>
+              <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8 max-w-md">{h.sub}</p>
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10">
               <Link href={h.href}
-                className="btn-gold px-8 py-4 rounded-xl font-semibold text-base flex items-center gap-2 shadow-lg shadow-yellow-500/20">
+                className="btn-gold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-yellow-500/20">
                 {h.cta} <ArrowRight size={18} />
               </Link>
               <Link href="/products"
-                className="border border-gray-700 text-gray-300 px-8 py-4 rounded-xl font-semibold text-base hover:border-yellow-500/40 hover:text-yellow-400 transition-all">
+                className="border border-gray-700 text-gray-300 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base text-center hover:border-yellow-500/40 hover:text-yellow-400 transition-all">
                 View All
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="flex gap-8 pt-6 border-t border-gray-800/60">
+            <div className="flex gap-4 sm:gap-8 pt-6 border-t border-gray-800/60">
               {[['100+','Products'],['6','Brands'],['100%','Authentic']].map(([v,l]) => (
                 <div key={l} className="text-center">
-                  <p className="font-heading text-3xl font-bold text-yellow-400">{v}</p>
-                  <p className="text-gray-500 text-xs uppercase tracking-wider mt-0.5">{l}</p>
+                  <p className="font-heading text-xl sm:text-3xl font-bold text-yellow-400">{v}</p>
+                  <p className="text-gray-500 text-[10px] sm:text-xs uppercase tracking-wider mt-0.5">{l}</p>
                 </div>
               ))}
             </div>
@@ -181,7 +181,7 @@ export default function HomePage() {
 
           {/* Skincare card */}
           <Link href="/products?category=skincare"
-            className="group relative rounded-3xl overflow-hidden h-72 bg-gradient-to-br from-blue-950 via-gray-900 to-black border border-blue-900/30 hover:border-blue-500/40 transition-all duration-500">
+            className="group relative rounded-3xl overflow-hidden h-52 sm:h-64 md:h-72 bg-gradient-to-br from-blue-950 via-gray-900 to-black border border-blue-900/30 hover:border-blue-500/40 transition-all duration-500">
             {/* bg glow */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(59,130,246,0.15)_0%,_transparent_60%)]" />
             {/* product image */}
@@ -191,10 +191,10 @@ export default function HomePage() {
                 onError={(e) => { e.target.style.display = 'none'; }} />
             )}
             <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-transparent" />
-            <div className="relative z-10 p-8 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-5 sm:p-8 flex flex-col justify-between h-full">
               <div>
                 <span className="text-xs text-blue-400 uppercase tracking-widest font-medium">Science-Backed</span>
-                <h3 className="font-heading text-3xl font-bold text-white mt-2 leading-tight">
+                <h3 className="font-heading text-xl sm:text-3xl font-bold text-white mt-2 leading-tight">
                   Skincare<br />That Works
                 </h3>
                 <p className="text-gray-400 text-sm mt-3 max-w-[200px]">
@@ -209,16 +209,16 @@ export default function HomePage() {
 
           {/* Face Care / Makeup card */}
           <Link href="/products?category=makeup"
-            className="group relative rounded-3xl overflow-hidden h-72 bg-gradient-to-br from-rose-950 via-gray-900 to-black border border-rose-900/30 hover:border-rose-500/40 transition-all duration-500">
+            className="group relative rounded-3xl overflow-hidden h-52 sm:h-64 md:h-72 bg-gradient-to-br from-rose-950 via-gray-900 to-black border border-rose-900/30 hover:border-rose-500/40 transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(244,63,94,0.15)_0%,_transparent_60%)]" />
             <img src={`${API_URL}/static/products/92004adc288247caab3af2b91694191b.webp`} alt="MAC Foundation"
               className="absolute right-0 bottom-0 h-full w-1/2 object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.style.display = 'none'; }} />
             <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-transparent" />
-            <div className="relative z-10 p-8 flex flex-col justify-between h-full">
+            <div className="relative z-10 p-5 sm:p-8 flex flex-col justify-between h-full">
               <div>
                 <span className="text-xs text-rose-400 uppercase tracking-widest font-medium">Bold & Beautiful</span>
-                <h3 className="font-heading text-3xl font-bold text-white mt-2 leading-tight">
+                <h3 className="font-heading text-xl sm:text-3xl font-bold text-white mt-2 leading-tight">
                   Makeup<br />Collection
                 </h3>
                 <p className="text-gray-400 text-sm mt-3 max-w-[200px]">
@@ -240,7 +240,7 @@ export default function HomePage() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-yellow-400 text-xs uppercase tracking-[0.25em] mb-2">Handpicked For You</p>
-            <h2 className="font-heading text-4xl font-bold">Featured Products</h2>
+            <h2 className="font-heading text-2xl sm:text-4xl font-bold">Featured Products</h2>
           </div>
           <Link href="/products" className="hidden sm:flex items-center gap-1.5 text-yellow-400 hover:text-yellow-300 transition-colors text-sm font-medium">
             View all <ArrowRight size={16} />
@@ -272,7 +272,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 pb-24">
         <div className="text-center mb-10">
           <p className="text-yellow-400 text-xs uppercase tracking-[0.25em] mb-2">Browse</p>
-          <h2 className="font-heading text-4xl font-bold">Shop by Category</h2>
+          <h2 className="font-heading text-2xl sm:text-4xl font-bold">Shop by Category</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[

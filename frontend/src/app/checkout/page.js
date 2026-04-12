@@ -157,10 +157,10 @@ export default function CheckoutPage() {
       <div className="grid lg:grid-cols-2 gap-8">
 
         {/* ── LEFT COLUMN ── */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
 
           {/* Shipping details */}
-          <section className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <section className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6">
             <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
               <Truck size={18} className="text-yellow-400" />
               Shipping Details
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
           </section>
 
           {/* Payment method */}
-          <section className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <section className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6">
             <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
               <CreditCard size={18} className="text-yellow-400" />
               Payment Method
@@ -318,7 +318,7 @@ export default function CheckoutPage() {
 
         {/* ── RIGHT COLUMN — Order Summary ── */}
         <div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 sticky top-24">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6 sticky top-24">
             <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
               <ShoppingBag size={18} className="text-yellow-400" />
               Order Summary

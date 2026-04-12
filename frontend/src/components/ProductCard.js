@@ -16,7 +16,7 @@ function ProductImage({ images, name }) {
       <img
         src={`${API_URL}${src}`}
         alt={name}
-        className="w-full h-56 object-cover relative z-10"
+        className="w-full h-44 sm:h-56 object-cover relative z-10"
         onError={(e) => { e.target.style.display = 'none'; }}
       />
     );
@@ -59,7 +59,7 @@ export default function ProductCard({ product }) {
       <Link href={`/products/${product.slug}`}>
         <div className="bg-luxury-darkGray border border-gray-800 rounded-lg overflow-hidden card-hover group cursor-pointer">
           {/* Image */}
-          <div className="relative bg-gray-900 h-56 flex items-center justify-center overflow-hidden">
+          <div className="relative bg-gray-900 h-44 sm:h-56 flex items-center justify-center overflow-hidden">
             <ProductImage images={product.images} name={product.name} />
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 absolute inset-0">
               <span className="text-4xl">✨</span>
@@ -74,7 +74,7 @@ export default function ProductCard({ product }) {
             )}
 
             {/* Hover action buttons */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
+            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-x-2 sm:group-hover:translate-x-0 transition-all duration-200">
               <button
                 onClick={handleWishlist}
                 className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-colors ${wishlisted ? 'bg-red-500 text-white' : 'bg-black/70 text-white hover:bg-red-500'}`}
@@ -93,7 +93,7 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Info */}
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             <p className="text-xs text-yellow-500 uppercase tracking-wider mb-1">{product.brand}</p>
             <h3 className="text-white font-medium text-sm leading-snug mb-2 line-clamp-2 min-h-[2.5rem]">
               {product.name}
