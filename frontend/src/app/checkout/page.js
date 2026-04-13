@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useCartStore, useAuthStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -333,7 +334,7 @@ export default function CheckoutPage() {
                   <div key={item.cartKey} className="flex items-center gap-3">
                     <div className="w-14 h-14 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                       {imageSrc
-                        ? <img src={`${API_URL}${imageSrc}`} alt={item.name} className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none'; }} />
+                        ? <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none'; }} />
                         : <span className="text-xl">✨</span>
                       }
                     </div>

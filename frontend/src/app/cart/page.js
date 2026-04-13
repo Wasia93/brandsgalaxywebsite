@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import { formatPrice, FREE_SHIPPING_THRESHOLD, SHIPPING_KARACHI } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, getSubtotal, getTax, getShipping, getGrandTotal } = useCartStore();
@@ -48,7 +47,7 @@ export default function CartPage() {
                 {/* Image */}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                   {imageSrc ? (
-                    <img src={`${API_URL}${imageSrc}`} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
+                    <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
                   ) : (
                     <span className="text-2xl">✨</span>
                   )}

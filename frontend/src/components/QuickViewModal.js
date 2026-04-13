@@ -4,9 +4,8 @@ import { X, ShoppingCart, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { useCartStore, useWishlistStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function parseVariants(extra_data) {
   if (!extra_data?.variants) return [];
@@ -66,7 +65,7 @@ export default function QuickViewModal({ product, onClose }) {
           <div className="bg-gray-900 rounded-tl-2xl rounded-bl-2xl overflow-hidden h-64 sm:h-full flex items-center justify-center">
             {product.images?.[0] ? (
               <img
-                src={`${API_URL}${product.images[0]}`}
+                src={getImageUrl(product.images[0])}
                 alt={product.name}
                 className="w-full h-full object-cover"
                 onError={(e) => { e.target.style.display = 'none'; }}

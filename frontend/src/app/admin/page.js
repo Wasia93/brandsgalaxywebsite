@@ -6,8 +6,7 @@ import { Package, PlusCircle, ShoppingBag, BarChart2, ArrowRight, Pencil } from 
 import { useAuthStore } from '@/lib/store';
 import { productsAPI } from '@/lib/api';
 import { formatPrice } from '@/lib/currency';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { getImageUrl } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -111,7 +110,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-gray-800 flex-shrink-0 overflow-hidden flex items-center justify-center">
                           {img
-                            ? <img src={`${API_URL}${img}`} alt={p.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
+                            ? <img src={getImageUrl(img)} alt={p.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
                             : <span className="text-lg">✨</span>}
                         </div>
                         <span className="text-white font-medium line-clamp-1">{p.name}</span>

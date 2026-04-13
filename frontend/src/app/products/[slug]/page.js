@@ -5,9 +5,8 @@ import { ShoppingCart, ArrowLeft, Star, Package, Tag, ChevronLeft, ChevronRight 
 import { productsAPI } from '@/lib/api';
 import { useCartStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 /* ── Image Carousel ── */
 function ImageCarousel({ images, name }) {
@@ -28,7 +27,7 @@ function ImageCarousel({ images, name }) {
   return (
     <div className="relative w-full h-full group">
       <img
-        src={`${API_URL}${images[current]}`}
+        src={getImageUrl(images[current])}
         alt={`${name} - ${current + 1}`}
         className="w-full h-full object-cover"
         onError={(e) => { e.target.style.display = 'none'; }}
@@ -58,7 +57,7 @@ function ImageCarousel({ images, name }) {
             {images.map((img, i) => (
               <button key={i} onClick={() => setCurrent(i)}
                 className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${i === current ? 'border-yellow-400' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-                <img src={`${API_URL}${img}`} alt="" className="w-full h-full object-cover" />
+                <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

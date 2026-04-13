@@ -5,9 +5,8 @@ import { Upload, X, Plus, Trash2, ArrowLeft, CheckCircle } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { productsAPI, getErrorMessage } from '@/lib/api';
 import api from '@/lib/api';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -182,7 +181,7 @@ export default function EditProductPage() {
           <div className="flex flex-wrap gap-4">
             {form.images.map((url, i) => (
               <div key={i} className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-700 group">
-                <img src={`${API_URL}${url}`} alt="" className="w-full h-full object-cover" />
+                <img src={getImageUrl(url)} alt="" className="w-full h-full object-cover" />
                 <button type="button" onClick={() => removeImage(i)}
                   className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Trash2 size={18} className="text-red-400" />

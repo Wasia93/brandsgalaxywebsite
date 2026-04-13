@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
-import os, uuid, shutil
 
 from app.database import get_db
 from app.models.product import Product, Category
 from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse, CategoryResponse
 from app.utils.auth import get_current_admin_user
+from app.utils.storage import upload_image
 
 router = APIRouter()
 
@@ -185,12 +185,5 @@ async def upload_product_image(
             detail="File too large. Maximum size is 5 MB.",
         )
 
-    ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "jpg"
-    filename = f"{uuid.uuid4().hex}.{ext}"
-    dest = os.path.join("static", "products", filename)
-
-    os.makedirs("static/products", exist_ok=True)
-    with open(dest, "wb") as f:
-        f.write(contents)
-
-    return {"url": f"/static/products/{filename}", "filename": filename}
+    url = upload_image(contents, file.filename, file.content_type)
+    return {"url": url, "filename": url.split("/")[-1]}

@@ -8,7 +8,7 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 python-multipart==0.0.6
-stripe==7.5.0
 pillow==10.1.0
 python-dotenv==1.0.0
 alembic==1.12.1
+supabase==2.3.0

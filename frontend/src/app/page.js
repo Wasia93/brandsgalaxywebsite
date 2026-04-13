@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Shield, Truck, Star, Sparkles, BadgeCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { productsAPI } from '@/lib/api';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import { getImageUrl } from '@/lib/utils';
 
 // Fixed hero collage cards — update slot 5 & 6 when Clinique/La Roche added
 const HERO_COLLAGE = [
@@ -113,7 +112,7 @@ function PremiumHero({ products }) {
             {HERO_COLLAGE.map((p) => (
               <Link key={p.slug} href={`/products/${p.slug}`}
                 className="relative rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 hover:border-yellow-500/40 transition-all group">
-                <img src={`${API_URL}${p.img}`} alt={p.name}
+                <img src={getImageUrl(p.img)} alt={p.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <p className="absolute bottom-2 left-2 right-2 text-white text-[10px] font-medium leading-tight line-clamp-1">{p.name}</p>
@@ -186,7 +185,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(59,130,246,0.15)_0%,_transparent_60%)]" />
             {/* product image */}
             {bannerA?.images?.[0] && (
-              <img src={`${API_URL}${bannerA.images[0]}`} alt="Skincare"
+              <img src={getImageUrl(bannerA.images[0])} alt="Skincare"
                 className="absolute right-0 bottom-0 h-full w-1/2 object-cover object-center opacity-80 group-hover:scale-105 transition-transform duration-700"
                 onError={(e) => { e.target.style.display = 'none'; }} />
             )}
@@ -211,7 +210,7 @@ export default function HomePage() {
           <Link href="/products?category=makeup"
             className="group relative rounded-3xl overflow-hidden h-52 sm:h-64 md:h-72 bg-gradient-to-br from-rose-950 via-gray-900 to-black border border-rose-900/30 hover:border-rose-500/40 transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(244,63,94,0.15)_0%,_transparent_60%)]" />
-            <img src={`${API_URL}/static/products/92004adc288247caab3af2b91694191b.webp`} alt="MAC Foundation"
+            <img src={getImageUrl('/static/products/92004adc288247caab3af2b91694191b.webp')} alt="MAC Foundation"
               className="absolute right-0 bottom-0 h-full w-1/2 object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.style.display = 'none'; }} />
             <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-950/70 to-transparent" />
@@ -305,7 +304,7 @@ export default function HomePage() {
               className={`group relative rounded-2xl overflow-hidden border border-gray-800 ${cat.border} transition-all duration-300 h-56 md:h-64`}>
               {/* category image */}
               <img
-                src={`${API_URL}${cat.img}`}
+                src={getImageUrl(cat.img)}
                 alt={cat.name}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 onError={(e) => { e.target.style.display = 'none'; }}
@@ -333,7 +332,7 @@ export default function HomePage() {
       <section className="relative w-full border-y border-yellow-800/20">
         {/* Full picture — no crop */}
         <img
-          src={`${API_URL}/static/products/8115a2eaf7a7456ba44f27bc8d677735.jpeg`}
+          src={getImageUrl('/static/products/8115a2eaf7a7456ba44f27bc8d677735.jpeg')}
           alt="Brands Galaxy Banner"
           className="w-full block"
           onError={(e) => { e.target.style.display = 'none'; }}

@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { Heart, ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
 import { useWishlistStore, useCartStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function WishlistPage() {
   const { items, toggleItem } = useWishlistStore();
@@ -44,7 +43,7 @@ export default function WishlistPage() {
               <Link href={`/products/${product.slug}`} className="block relative h-52 bg-gray-800 overflow-hidden">
                 {product.images?.[0] ? (
                   <img
-                    src={`${API_URL}${product.images[0]}`}
+                    src={getImageUrl(product.images[0])}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => { e.target.style.display = 'none'; }}

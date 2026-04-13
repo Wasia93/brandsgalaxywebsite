@@ -3,18 +3,17 @@ import Link from 'next/link';
 import { ShoppingCart, Star, Heart, Eye } from 'lucide-react';
 import { useCartStore, useWishlistStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import QuickViewModal from './QuickViewModal';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function ProductImage({ images, name }) {
   const src = images?.[0];
   if (src) {
     return (
       <img
-        src={`${API_URL}${src}`}
+        src={getImageUrl(src)}
         alt={name}
         className="w-full h-44 sm:h-56 object-cover relative z-10"
         onError={(e) => { e.target.style.display = 'none'; }}
