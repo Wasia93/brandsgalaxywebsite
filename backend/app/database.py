@@ -6,11 +6,12 @@ _is_sqlite = "sqlite" in settings.DATABASE_URL
 
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args={"check_same_thread": False} if _is_sqlite else {},
-    # Neon / cloud PostgreSQL: keep pool small and verify connections
+    connect_args={"check_same_thread": False} if _is_sqlite else {"sslmode": "require"},
     pool_pre_ping=True,
     pool_size=5 if not _is_sqlite else 1,
     max_overflow=10 if not _is_sqlite else 0,
+    pool_timeout=30,
+    pool_recycle=300,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

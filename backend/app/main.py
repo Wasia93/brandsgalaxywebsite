@@ -8,18 +8,19 @@ from app.database import engine, Base
 from app.routes import auth, products, orders
 from app.config import settings
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
 # Ensure static directories exist
 os.makedirs("static/products", exist_ok=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialize database with sample data on startup"""
-    from app.utils.seed import seed_database
-    seed_database()
+    """Initialize database on startup"""
+    try:
+        Base.metadata.create_all(bind=engine)
+        from app.utils.seed import seed_database
+        seed_database()
+    except Exception as e:
+        print(f"Startup DB init warning: {e}")
     yield
 
 
