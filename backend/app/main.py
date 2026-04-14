@@ -64,20 +64,3 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
-
-
-@app.get("/debug-products")
-def debug_products():
-    from app.database import SessionLocal
-    from app.models.product import Product
-    db = SessionLocal()
-    try:
-        products = db.query(Product).limit(1).all()
-        if products:
-            p = products[0]
-            return {"ok": True, "id": p.id, "name": p.name, "images": p.images, "rating_average": str(p.rating_average)}
-        return {"ok": True, "count": 0}
-    except Exception as e:
-        return {"ok": False, "error": str(e), "type": type(e).__name__}
-    finally:
-        db.close()
