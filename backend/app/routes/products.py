@@ -22,8 +22,8 @@ async def get_products(
     max_price: Optional[float] = None,
     is_featured: Optional[bool] = None,
     in_stock: Optional[bool] = None,
-    sort_by: Optional[str] = Query("created_at", regex="^(price|created_at|rating_average|name)$"),
-    sort_order: Optional[str] = Query("desc", regex="^(asc|desc)$"),
+    sort_by: Optional[str] = Query("created_at", pattern="^(price|created_at|rating_average|name)$"),
+    sort_order: Optional[str] = Query("desc", pattern="^(asc|desc)$"),
     db: Session = Depends(get_db)
 ):
     """Get products with advanced filtering"""
