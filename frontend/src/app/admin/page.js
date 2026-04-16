@@ -2,17 +2,20 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Package, PlusCircle, ShoppingBag, BarChart2, ArrowRight, Pencil } from 'lucide-react';
+import { Package, PlusCircle, ShoppingBag, BarChart2, ArrowRight, Pencil, Trash2 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { productsAPI } from '@/lib/api';
+import api from '@/lib/api';
 import { formatPrice } from '@/lib/currency';
 import { getImageUrl } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, token } = useAuthStore();
   const [stats, setStats] = useState({ products: 0, categories: 0, brands: 0 });
   const [products, setProducts] = useState([]);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     if (!token || !user?.is_admin) { router.push('/auth/login'); return; }
@@ -25,6 +28,21 @@ export default function AdminDashboard() {
       setProducts(prods.data);
     }).catch(() => {});
   }, [token, user, router]);
+
+  const handleDelete = async (id, name) => {
+    if (!confirm(`Delete "${name}"? This will hide it from the store.`)) return;
+    setDeletingId(id);
+    try {
+      await api.delete(`/api/products/${id}`);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      setStats((s) => ({ ...s, products: s.products - 1 }));
+      toast.success('Product deleted');
+    } catch {
+      toast.error('Failed to delete product');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (!token || !user?.is_admin) return null;
 
@@ -129,10 +147,18 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Link href={`/admin/products/edit/${p.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors border border-gray-700 hover:border-yellow-500/50 rounded-lg px-3 py-1.5">
-                        <Pencil size={12} /> Edit
-                      </Link>
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/admin/products/edit/${p.id}`}
+                          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-yellow-400 transition-colors border border-gray-700 hover:border-yellow-500/50 rounded-lg px-3 py-1.5">
+                          <Pencil size={12} /> Edit
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(p.id, p.name)}
+                          disabled={deletingId === p.id}
+                          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-400 transition-colors border border-gray-700 hover:border-red-500/50 rounded-lg px-3 py-1.5 disabled:opacity-40">
+                          <Trash2 size={12} /> {deletingId === p.id ? '…' : 'Delete'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

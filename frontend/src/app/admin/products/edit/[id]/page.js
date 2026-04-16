@@ -16,6 +16,7 @@ export default function EditProductPage() {
 
   const [categories, setCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -101,6 +102,19 @@ export default function EditProductPage() {
     setForm((f) => ({ ...f, extra_data: f.extra_data.map((e, i) => i === idx ? { ...e, [field]: val } : e) }));
   const removeExtra = (idx) =>
     setForm((f) => ({ ...f, extra_data: f.extra_data.filter((_, i) => i !== idx) }));
+
+  const handleDelete = async () => {
+    if (!confirm(`Delete "${form.name}"? This will hide it from the store.`)) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/api/products/${id}`);
+      toast.success('Product deleted');
+      router.push('/admin');
+    } catch {
+      toast.error('Failed to delete product');
+      setDeleting(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -296,15 +310,19 @@ export default function EditProductPage() {
 
         {/* Submit */}
         <div className="flex gap-4">
-          <button type="submit" disabled={submitting}
+          <button type="submit" disabled={submitting || deleting}
             className="btn-gold flex-1 py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 disabled:opacity-60">
             {submitting
               ? <><div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" /> Saving…</>
               : 'Save Changes'}
           </button>
-          <button type="button" onClick={() => router.back()}
-            className="px-6 py-4 border border-gray-700 rounded-xl text-gray-400 hover:border-gray-500 hover:text-white transition-colors">
+          <button type="button" onClick={() => router.back()} disabled={submitting || deleting}
+            className="px-6 py-4 border border-gray-700 rounded-xl text-gray-400 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-60">
             Cancel
+          </button>
+          <button type="button" onClick={handleDelete} disabled={submitting || deleting}
+            className="px-6 py-4 border border-red-900 rounded-xl text-red-500 hover:border-red-500 hover:text-red-400 transition-colors flex items-center gap-2 disabled:opacity-60">
+            <Trash2 size={16} /> {deleting ? 'Deleting…' : 'Delete'}
           </button>
         </div>
       </form>
