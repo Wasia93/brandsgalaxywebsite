@@ -61,7 +61,7 @@ export default function ProductCard({ product }) {
           <div className="relative bg-gray-50 h-44 sm:h-56 flex items-center justify-center overflow-hidden">
             <ProductImage images={product.images} name={product.name} />
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 absolute inset-0">
-              <span className="text-4xl">✨</span>
+              <span className="text-gray-300 text-xs">—</span>
             </div>
 
             {/* Badges */}

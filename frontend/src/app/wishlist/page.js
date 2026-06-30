@@ -46,7 +46,7 @@ export default function WishlistPage() {
                     onError={(e) => { e.target.style.display = 'none'; }} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-4xl">✨</span>
+                    <span className="text-gray-300 text-xs">—</span>
                   </div>
                 )}
                 {!inStock && (

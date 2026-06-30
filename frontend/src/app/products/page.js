@@ -249,7 +249,7 @@ function ProductsContent() {
         </div>
       ) : products.length === 0 ? (
         <div className="text-center py-24">
-          <p className="text-5xl mb-4">🔍</p>
+          <p className="text-5xl mb-4 text-gray-300">?</p>
           <p className="text-lg text-gray-700 font-semibold mb-1">No products found</p>
           {filters.search && <p className="text-gray-400 text-sm mb-4">No results for "{filters.search}"</p>}
           <button onClick={clearFilters} className="mt-2 btn-gold px-6 py-2 rounded-lg text-sm font-semibold">Clear Filters</button>

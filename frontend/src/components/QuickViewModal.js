@@ -71,7 +71,7 @@ export default function QuickViewModal({ product, onClose }) {
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
             ) : (
-              <span className="text-6xl">✨</span>
+              <span className="text-gray-300 text-xs">—</span>
             )}
           </div>
 

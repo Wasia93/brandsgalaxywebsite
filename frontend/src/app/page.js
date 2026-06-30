@@ -18,7 +18,7 @@ const HERO_COLLAGE = [
 
 const HEADLINES = [
   { tag: 'New Arrivals', title: 'Luxury Beauty', accent: 'Redefined.', sub: 'Shop MAC, CeraVe, Huda Beauty & more — every product 100% authentic.', href: '/products', cta: 'Shop Now' },
-  { tag: '🌸 K-Beauty', title: 'Korean', accent: 'Glow.', sub: 'ANUA, MEDICUBE & more — authentic Korean skincare for real glass-skin results.', href: '/products?category=korean-beauty', cta: 'Shop K-Beauty' },
+  { tag: 'K-Beauty', title: 'Korean', accent: 'Glow.', sub: 'ANUA, MEDICUBE & more — authentic Korean skincare for real glass-skin results.', href: '/products?category=korean-beauty', cta: 'Shop K-Beauty' },
   { tag: 'Skincare Essentials', title: 'Glow From', accent: 'Within.', sub: 'Science-backed skincare with Ceramides, Hyaluronic Acid & Retinol.', href: '/products?category=skincare', cta: 'Shop Skincare' },
   { tag: 'Makeup Collection', title: 'Bold &', accent: 'Beautiful.', sub: 'Charlotte Tilbury, Tarte, Huda Beauty — iconic looks delivered to you.', href: '/products?category=makeup', cta: 'Shop Makeup' },
 ];
@@ -236,7 +236,7 @@ export default function HomePage() {
             {/* LEFT — Text */}
             <div className="flex-1 p-8 sm:p-12 lg:p-14">
               <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-pink-600 font-semibold mb-5 bg-pink-50 border border-pink-200 rounded-full px-4 py-1.5">
-                🌸 Now Available
+                Now Available
               </span>
               <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
                 Korean <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Beauty</span>
@@ -403,7 +403,7 @@ export default function HomePage() {
               img: '',
               accent: 'text-pink-500', border: 'hover:border-pink-300',
               desc: 'K-Beauty essentials',
-              emoji: '🌸',
+              emoji: 'K',
             },
           ].map((cat) => (
             <Link key={cat.slug} href={`/products?category=${cat.slug}`}

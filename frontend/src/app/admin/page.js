@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                         <div className="w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
                           {img
                             ? <img src={getImageUrl(img)} alt={p.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
-                            : <span className="text-lg">✨</span>}
+                            : <span className="text-gray-300 text-xs">—</span>}
                         </div>
                         <span className="text-gray-900 font-medium line-clamp-1">{p.name}</span>
                       </div>

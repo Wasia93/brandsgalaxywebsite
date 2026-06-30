@@ -49,7 +49,7 @@ export default function CartPage() {
                   {imageSrc ? (
                     <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
                   ) : (
-                    <span className="text-2xl">✨</span>
+                    <span className="text-gray-300 text-xs">—</span>
                   )}
                 </div>
 

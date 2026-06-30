@@ -282,7 +282,7 @@ export default function CheckoutPage() {
                     <div className="w-14 h-14 bg-gray-50 border border-gray-100 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                       {imageSrc
                         ? <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none'; }} />
-                        : <span className="text-xl">✨</span>
+                        : <span className="text-gray-300 text-xs">No image</span>
                       }
                     </div>
                     <div className="flex-1 min-w-0">

@@ -18,7 +18,7 @@ function ImageCarousel({ images, name }) {
   if (total === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-gray-50">
-        <span className="text-8xl">✨</span>
+        <span className="text-gray-300 text-sm">No Image</span>
       </div>
     );
   }

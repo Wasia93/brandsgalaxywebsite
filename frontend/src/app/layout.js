@@ -80,7 +80,7 @@ export default function RootLayout({ children }) {
                   <li><a href="/products?is_featured=true" className="hover:text-yellow-600 transition-colors">Featured</a></li>
                   <li><a href="/products?category=skincare" className="hover:text-yellow-600 transition-colors">Skincare</a></li>
                   <li><a href="/products?category=makeup" className="hover:text-yellow-600 transition-colors">Makeup</a></li>
-                  <li><a href="/products?category=korean-beauty" className="hover:text-pink-500 transition-colors">🌸 K-Beauty</a></li>
+                  <li><a href="/products?category=korean-beauty" className="hover:text-pink-500 transition-colors">K-Beauty</a></li>
                 </ul>
               </div>
 
@@ -102,7 +102,7 @@ export default function RootLayout({ children }) {
                 <ul className="space-y-2 text-sm text-gray-500">
                   <li>
                     <a href="https://wa.me/923413157159" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 transition-colors flex items-center gap-1.5">
-                      <span>💬</span> WhatsApp Us
+                      💬 WhatsApp Us
                     </a>
                   </li>
                   <li><a href="/wishlist" className="hover:text-yellow-600 transition-colors">My Wishlist</a></li>

@@ -48,7 +48,7 @@ export default function Navbar() {
           <Link href="/products?category=skincare" className="hover:text-yellow-600 transition-colors font-medium">Skincare</Link>
           <Link href="/products?category=makeup" className="hover:text-yellow-600 transition-colors font-medium">Makeup</Link>
           <Link href="/products?category=korean-beauty" className="hover:text-pink-500 transition-colors font-medium flex items-center gap-1">
-            <span>🌸</span> K-Beauty
+            K-Beauty
           </Link>
         </div>
 
@@ -110,7 +110,7 @@ export default function Navbar() {
           <Link href="/products?is_featured=true" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium">Featured</Link>
           <Link href="/products?category=skincare" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium">Skincare</Link>
           <Link href="/products?category=makeup" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium">Makeup</Link>
-          <Link href="/products?category=korean-beauty" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-pink-500 transition-colors font-medium flex items-center gap-2">🌸 K-Beauty</Link>
+          <Link href="/products?category=korean-beauty" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-pink-500 transition-colors font-medium flex items-center gap-2">K-Beauty</Link>
           <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-red-500 transition-colors font-medium flex items-center gap-2">
             <Heart size={16} /> Wishlist {mounted && wishlistCount > 0 && <span className="bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{wishlistCount}</span>}
           </Link>
