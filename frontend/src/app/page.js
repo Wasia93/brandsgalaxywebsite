@@ -233,6 +233,52 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════
+          KOREAN BEAUTY SECTION
+      ════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 pb-16">
+        <Link href="/products?category=korean-beauty"
+          className="group relative rounded-3xl overflow-hidden flex flex-col md:flex-row items-center border border-pink-900/30 hover:border-pink-400/50 transition-all duration-500 bg-gradient-to-br from-pink-950 via-gray-900 to-black min-h-[240px]">
+
+          {/* Background glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(236,72,153,0.18)_0%,_transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.10)_0%,_transparent_55%)]" />
+
+          {/* Left text content */}
+          <div className="relative z-10 flex-1 p-8 sm:p-12">
+            <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-pink-400 font-medium mb-4 bg-pink-500/10 border border-pink-500/20 rounded-full px-4 py-1.5">
+              🌸 New Collection
+            </span>
+            <h2 className="font-heading text-3xl sm:text-5xl font-bold text-white leading-tight mb-3">
+              Korean <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">Beauty</span>
+            </h2>
+            <p className="text-gray-400 text-sm sm:text-base max-w-sm mb-6">
+              Glass skin, 10-step routines & K-Beauty essentials — COSRX, Some By Mi, Innisfree & more, delivered to your door.
+            </p>
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold px-6 py-3 rounded-xl text-sm group-hover:from-pink-400 group-hover:to-purple-400 transition-all shadow-lg shadow-pink-500/20">
+              Shop K-Beauty <ArrowRight size={16} />
+            </div>
+          </div>
+
+          {/* Right — decorative brand pills */}
+          <div className="relative z-10 flex-shrink-0 p-8 flex flex-col gap-3 items-start md:items-end w-full md:w-auto">
+            {[
+              { name: 'COSRX', tag: 'Snail Mucin Essentials' },
+              { name: 'Some By Mi', tag: 'AHA·BHA·PHA Toner' },
+              { name: 'Innisfree', tag: 'Green Tea Serum' },
+              { name: 'Laneige', tag: 'Lip Sleeping Mask' },
+              { name: 'TIRTIR', tag: 'Cushion Foundation' },
+            ].map((b) => (
+              <div key={b.name}
+                className="flex items-center gap-3 bg-white/5 border border-pink-900/30 group-hover:border-pink-500/30 rounded-xl px-4 py-2.5 transition-all">
+                <span className="text-pink-300 font-bold text-sm w-24 shrink-0">{b.name}</span>
+                <span className="text-gray-500 text-xs">{b.tag}</span>
+              </div>
+            ))}
+          </div>
+        </Link>
+      </section>
+
+      {/* ════════════════════════════════════════════
           FEATURED PRODUCTS
       ════════════════════════════════════════════ */}
       <section className="max-w-7xl mx-auto px-4 pb-20">
@@ -273,7 +319,7 @@ export default function HomePage() {
           <p className="text-yellow-400 text-xs uppercase tracking-[0.25em] mb-2">Browse</p>
           <h2 className="font-heading text-2xl sm:text-4xl font-bold">Shop by Category</h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {[
             {
               name: 'Skincare', slug: 'skincare',
@@ -299,16 +345,29 @@ export default function HomePage() {
               accent: 'text-emerald-300', border: 'hover:border-emerald-400/50',
               desc: 'Lotions & washes',
             },
+            {
+              name: 'Korean Beauty', slug: 'korean-beauty',
+              img: '',
+              accent: 'text-pink-300', border: 'hover:border-pink-400/50',
+              desc: 'K-Beauty essentials',
+              emoji: '🌸',
+            },
           ].map((cat) => (
             <Link key={cat.slug} href={`/products?category=${cat.slug}`}
               className={`group relative rounded-2xl overflow-hidden border border-gray-800 ${cat.border} transition-all duration-300 h-56 md:h-64`}>
-              {/* category image */}
-              <img
-                src={getImageUrl(cat.img)}
-                alt={cat.name}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                onError={(e) => { e.target.style.display = 'none'; }}
-              />
+              {/* category image or emoji fallback */}
+              {cat.img ? (
+                <img
+                  src={getImageUrl(cat.img)}
+                  alt={cat.name}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-pink-950 via-purple-950 to-black">
+                  <span className="text-7xl group-hover:scale-110 transition-transform duration-500 select-none">{cat.emoji}</span>
+                </div>
+              )}
               {/* dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
               {/* hover colour tint */}

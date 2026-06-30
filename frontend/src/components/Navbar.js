@@ -46,6 +46,9 @@ export default function Navbar() {
           <Link href="/products?is_featured=true" className="hover:text-yellow-400 transition-colors">Featured</Link>
           <Link href="/products?category=skincare" className="hover:text-yellow-400 transition-colors">Skincare</Link>
           <Link href="/products?category=makeup" className="hover:text-yellow-400 transition-colors">Makeup</Link>
+          <Link href="/products?category=korean-beauty" className="hover:text-pink-400 transition-colors flex items-center gap-1">
+            <span>🌸</span> K-Beauty
+          </Link>
         </div>
 
         {/* Actions */}
@@ -106,6 +109,7 @@ export default function Navbar() {
           <Link href="/products?is_featured=true" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Featured</Link>
           <Link href="/products?category=skincare" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Skincare</Link>
           <Link href="/products?category=makeup" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-yellow-400 transition-colors">Makeup</Link>
+          <Link href="/products?category=korean-beauty" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-800/50 hover:text-pink-400 transition-colors flex items-center gap-2">🌸 K-Beauty</Link>
           {token ? (
             <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="py-3.5 text-left text-red-400">
               Logout
