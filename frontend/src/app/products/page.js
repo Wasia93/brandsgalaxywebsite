@@ -20,9 +20,11 @@ function ProductsContent() {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const debounceRef = useRef(null);
+  const retryRef = useRef(null);
 
   const [filters, setFilters] = useState({
     search: '',
@@ -36,8 +38,10 @@ function ProductsContent() {
     sort_order: 'desc',
   });
 
-  const fetchProducts = useCallback(() => {
+  const fetchProducts = useCallback((attempt = 0) => {
     setLoading(true);
+    setFetchError(false);
+    if (retryRef.current) clearTimeout(retryRef.current);
     const params = {};
     if (filters.search) params.search = filters.search;
     if (filters.category) params.category = filters.category;
@@ -51,9 +55,17 @@ function ProductsContent() {
     params.limit = 100;
 
     productsAPI.getAll(params)
-      .then((res) => setProducts(res.data))
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
+      .then((res) => { setProducts(res.data); setFetchError(false); setLoading(false); })
+      .catch(() => {
+        if (attempt < 2) {
+          // Auto-retry: 4s then 8s — gives Render cold-start time to wake up
+          retryRef.current = setTimeout(() => fetchProducts(attempt + 1), (attempt + 1) * 4000);
+        } else {
+          setProducts([]);
+          setFetchError(true);
+          setLoading(false);
+        }
+      });
   }, [filters]);
 
   useEffect(() => {
@@ -246,6 +258,13 @@ function ProductsContent() {
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} className="bg-gray-100 rounded-xl h-72 animate-pulse" />
           ))}
+        </div>
+      ) : fetchError ? (
+        <div className="text-center py-24">
+          <p className="text-5xl mb-4 text-gray-300">!</p>
+          <p className="text-lg text-gray-700 font-semibold mb-1">Could not load products</p>
+          <p className="text-gray-400 text-sm mb-6">The server may be waking up. Please try again.</p>
+          <button onClick={() => fetchProducts(0)} className="btn-gold px-6 py-2 rounded-lg text-sm font-semibold">Retry</button>
         </div>
       ) : products.length === 0 ? (
         <div className="text-center py-24">
