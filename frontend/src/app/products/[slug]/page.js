@@ -15,7 +15,7 @@ function ImageCarousel({ images, name }) {
 
   if (total === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+      <div className="w-full h-full flex items-center justify-center bg-gray-50">
         <span className="text-8xl">✨</span>
       </div>
     );
@@ -36,11 +36,11 @@ function ImageCarousel({ images, name }) {
       {total > 1 && (
         <>
           <button onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-gray-700 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20 shadow-md">
             <ChevronLeft size={20} />
           </button>
           <button onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-gray-700 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20 shadow-md">
             <ChevronRight size={20} />
           </button>
 
@@ -48,7 +48,7 @@ function ImageCarousel({ images, name }) {
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
             {images.map((_, i) => (
               <button key={i} onClick={() => setCurrent(i)}
-                className={`h-2 rounded-full transition-all ${i === current ? 'bg-yellow-400 w-4' : 'bg-white/40 w-2 hover:bg-white/70'}`} />
+                className={`h-2 rounded-full transition-all ${i === current ? 'bg-yellow-500 w-4' : 'bg-gray-400/60 w-2 hover:bg-gray-500'}`} />
             ))}
           </div>
 
@@ -56,7 +56,7 @@ function ImageCarousel({ images, name }) {
           <div className="absolute bottom-12 left-0 right-0 flex justify-center gap-2 px-4 z-20">
             {images.map((img, i) => (
               <button key={i} onClick={() => setCurrent(i)}
-                className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${i === current ? 'border-yellow-400' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0 ${i === current ? 'border-yellow-500' : 'border-transparent opacity-60 hover:opacity-100'}`}>
                 <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
@@ -115,8 +115,8 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12">
-        <div className="bg-gray-900 rounded-xl h-96 animate-pulse" />
-        <div className="space-y-4">{[1,2,3,4].map(i => <div key={i} className="bg-gray-900 rounded h-8 animate-pulse" />)}</div>
+        <div className="bg-gray-100 rounded-xl h-96 animate-pulse" />
+        <div className="space-y-4">{[1,2,3,4].map(i => <div key={i} className="bg-gray-100 rounded h-8 animate-pulse" />)}</div>
       </div>
     );
   }
@@ -126,76 +126,73 @@ export default function ProductDetailPage() {
   const variants = parseVariants(product.extra_data);
   const hasVariants = variants.length > 0;
 
-  // Price: use selected variant price if available, else product price
   const displayPrice = hasVariants && selectedVariant
     ? selectedVariant.price
     : Number(product.discount_price || product.price);
   const originalPrice = !hasVariants && product.discount_price ? Number(product.price) : null;
 
-  // Stock: use selected variant stock if available
   const stockQty = hasVariants && selectedVariant
     ? selectedVariant.stock
     : product.stock_quantity;
 
-  // extra_data fields to display (exclude "variants" key)
   const extraEntries = product.extra_data
     ? Object.entries(product.extra_data).filter(([k]) => k !== 'variants')
     : [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-400 hover:text-white mb-8 text-sm transition-colors">
+    <div className="max-w-7xl mx-auto px-4 py-10 bg-white">
+      <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-400 hover:text-gray-700 mb-8 text-sm transition-colors">
         <ArrowLeft size={16} /> Back
       </button>
 
       <div className="grid md:grid-cols-2 gap-6 md:gap-12">
         {/* ── Image Carousel ── */}
-        <div className="relative bg-gray-900 rounded-2xl overflow-hidden h-64 sm:h-80 md:h-[520px]">
+        <div className="relative bg-gray-50 rounded-2xl overflow-hidden h-64 sm:h-80 md:h-[520px] border border-gray-100">
           <ImageCarousel images={product.images || []} name={product.name} />
           {product.discount_price && !hasVariants && (
-            <span className="absolute top-4 left-4 bg-red-600 text-white text-sm px-3 py-1 rounded-lg font-semibold z-30">SALE</span>
+            <span className="absolute top-4 left-4 bg-red-500 text-white text-sm px-3 py-1 rounded-full font-semibold z-30">SALE</span>
           )}
         </div>
 
         {/* ── Details ── */}
         <div className="flex flex-col">
-          <p className="text-yellow-400 uppercase tracking-widest text-sm mb-2">{product.brand}</p>
-          <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">{product.name}</h1>
+          <p className="text-yellow-600 uppercase tracking-widest text-sm mb-2 font-semibold">{product.brand}</p>
+          <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">{product.name}</h1>
 
           {/* Rating */}
           {Number(product.rating_count) > 0 && (
             <div className="flex items-center gap-2 mb-4">
               {[1,2,3,4,5].map((s) => (
-                <Star key={s} size={16} className={s <= Math.round(Number(product.rating_average)) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'} />
+                <Star key={s} size={16} className={s <= Math.round(Number(product.rating_average)) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'} />
               ))}
               <span className="text-gray-400 text-sm">{Number(product.rating_average).toFixed(1)} ({product.rating_count} reviews)</span>
             </div>
           )}
 
-          {/* Price — updates live when size is selected */}
+          {/* Price */}
           <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-yellow-400 text-2xl sm:text-3xl md:text-4xl font-bold">{formatPrice(displayPrice)}</span>
+            <span className="text-yellow-600 text-2xl sm:text-3xl md:text-4xl font-bold">{formatPrice(displayPrice)}</span>
             {originalPrice && (
               <>
-                <span className="text-gray-500 text-xl line-through">{formatPrice(originalPrice)}</span>
-                <span className="bg-red-900 text-red-300 text-sm px-2 py-1 rounded">Save {formatPrice(originalPrice - displayPrice)}</span>
+                <span className="text-gray-400 text-xl line-through">{formatPrice(originalPrice)}</span>
+                <span className="bg-red-50 text-red-500 text-sm px-2 py-1 rounded-full border border-red-100">Save {formatPrice(originalPrice - displayPrice)}</span>
               </>
             )}
             {hasVariants && (
-              <span className="text-gray-500 text-sm">per {selectedVariant?.size}</span>
+              <span className="text-gray-400 text-sm">per {selectedVariant?.size}</span>
             )}
           </div>
 
           {/* Description */}
           {product.description && (
-            <p className="text-gray-400 leading-relaxed mb-6">{product.description}</p>
+            <p className="text-gray-500 leading-relaxed mb-6">{product.description}</p>
           )}
 
           {/* ── Size / Variant Selector ── */}
           {hasVariants && (
             <div className="mb-6">
-              <p className="text-sm text-gray-400 mb-3">
-                Size: <span className="text-white font-semibold">{selectedVariant?.size}</span>
+              <p className="text-sm text-gray-500 mb-3">
+                Size: <span className="text-gray-900 font-semibold">{selectedVariant?.size}</span>
               </p>
               <div className="flex flex-wrap gap-2">
                 {variants.map((v) => (
@@ -205,10 +202,10 @@ export default function ProductDetailPage() {
                     disabled={v.stock <= 0}
                     className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all relative ${
                       selectedVariant?.size === v.size
-                        ? 'border-yellow-500 bg-yellow-500/15 text-yellow-400'
+                        ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
                         : v.stock <= 0
-                          ? 'border-gray-800 text-gray-600 cursor-not-allowed line-through'
-                          : 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'
+                          ? 'border-gray-200 text-gray-300 cursor-not-allowed line-through'
+                          : 'border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-900'
                     }`}
                   >
                     {v.size}
@@ -221,20 +218,20 @@ export default function ProductDetailPage() {
 
           {/* Stock */}
           <div className="flex items-center gap-2 mb-6">
-            <Package size={16} className={stockQty > 0 ? 'text-green-400' : 'text-red-400'} />
-            <span className={`text-sm ${stockQty > 0 ? 'text-green-400' : 'text-red-400'}`}>
+            <Package size={16} className={stockQty > 0 ? 'text-green-500' : 'text-red-500'} />
+            <span className={`text-sm ${stockQty > 0 ? 'text-green-600' : 'text-red-500'}`}>
               {stockQty > 0 ? `${stockQty} in stock` : 'Out of stock'}
             </span>
-            {product.sku && <span className="text-gray-600 text-xs ml-4">SKU: {product.sku}</span>}
+            {product.sku && <span className="text-gray-400 text-xs ml-4">SKU: {product.sku}</span>}
           </div>
 
           {/* Qty + Add to Cart */}
           {stockQty > 0 && (
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center border border-gray-700 rounded-lg overflow-hidden">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-4 py-3 hover:bg-gray-800 transition-colors text-lg">−</button>
-                <span className="px-4 py-3 text-white font-medium min-w-[3rem] text-center">{qty}</span>
-                <button onClick={() => setQty(Math.min(stockQty, qty + 1))} className="px-4 py-3 hover:bg-gray-800 transition-colors text-lg">+</button>
+              <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-4 py-3 hover:bg-gray-100 transition-colors text-lg text-gray-700">−</button>
+                <span className="px-4 py-3 text-gray-900 font-medium min-w-[3rem] text-center">{qty}</span>
+                <button onClick={() => setQty(Math.min(stockQty, qty + 1))} className="px-4 py-3 hover:bg-gray-100 transition-colors text-lg text-gray-700">+</button>
               </div>
               <button onClick={handleAddToCart}
                 className="btn-gold flex-1 py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2">
@@ -246,16 +243,16 @@ export default function ProductDetailPage() {
 
           {/* Product Details table */}
           {extraEntries.length > 0 && (
-            <div className="border border-gray-800 rounded-xl p-4">
+            <div className="border border-gray-200 rounded-xl p-4 bg-gray-50">
               <div className="flex items-center gap-2 mb-3">
-                <Tag size={16} className="text-yellow-400" />
-                <p className="text-sm font-semibold text-gray-300 uppercase tracking-wider">Product Details</p>
+                <Tag size={16} className="text-yellow-600" />
+                <p className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Product Details</p>
               </div>
               <dl className="space-y-2">
                 {extraEntries.map(([key, val]) => (
                   <div key={key} className="grid grid-cols-2 gap-2 text-sm">
                     <dt className="text-gray-500 capitalize">{key.replace(/_/g, ' ')}</dt>
-                    <dd className="text-gray-300">{Array.isArray(val) ? val.join(', ') : String(val)}</dd>
+                    <dd className="text-gray-800">{Array.isArray(val) ? val.join(', ') : String(val)}</dd>
                   </div>
                 ))}
               </dl>

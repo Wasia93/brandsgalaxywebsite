@@ -18,7 +18,6 @@ const SHIPPING_OTHER = 450;
 const FREE_SHIPPING_THRESHOLD = 5000;
 const TAX_RATE = 0.04;
 
-// ── Bank details — update these when you have the real account numbers ──
 const BANK_DETAILS = {
   easypaisa: {
     number: '0341-3157159',
@@ -44,9 +43,9 @@ export default function CheckoutPage() {
     full_name: '',
     phone: '',
     address: '',
-    city_type: 'karachi',   // 'karachi' | 'other'
+    city_type: 'karachi',
     city_name: '',
-    payment_method: 'cod',  // 'cod' | 'bank_transfer'
+    payment_method: 'cod',
     notes: '',
   });
 
@@ -55,22 +54,18 @@ export default function CheckoutPage() {
     if (user?.full_name) setForm(f => ({ ...f, full_name: user.full_name }));
   }, [user]);
 
-  // ── Guard: not mounted yet ──
   if (!mounted) return null;
 
-  // ── Guard: not logged in ──
   if (!token) {
     router.push('/auth/login?next=/checkout');
     return null;
   }
 
-  // ── Guard: empty cart (but allow success screen) ──
   if (items.length === 0 && !orderPlaced) {
     router.push('/cart');
     return null;
   }
 
-  // ── Price calculations ──
   const subtotal = getSubtotal();
   const cityName =
     form.city_type === 'karachi' ? 'Karachi' : (form.city_name.trim() || 'Other City');
@@ -86,7 +81,6 @@ export default function CheckoutPage() {
   const tax = Math.round(base * TAX_RATE);
   const grandTotal = base + tax;
 
-  // ── Place order ──
   const handlePlaceOrder = async () => {
     if (!form.full_name.trim()) { toast.error('Full name is required'); return; }
     if (!form.phone.trim())     { toast.error('Phone number is required'); return; }
@@ -140,70 +134,54 @@ export default function CheckoutPage() {
     }
   };
 
-  // ── Success screen ──
   if (orderPlaced) {
     return <OrderSuccess order={orderPlaced} />;
   }
 
-  // ── Checkout form ──
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Back link */}
-      <Link href="/cart" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-6 transition-colors">
+      <Link href="/cart" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 mb-6 transition-colors">
         <ArrowLeft size={16} /> Back to Cart
       </Link>
 
-      <h1 className="font-heading text-3xl font-bold mb-8">Checkout</h1>
+      <h1 className="font-heading text-3xl font-bold mb-8 text-gray-900">Checkout</h1>
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        {/* ── LEFT COLUMN ── */}
+        {/* LEFT COLUMN */}
         <div className="space-y-4 sm:space-y-6">
 
           {/* Shipping details */}
-          <section className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6">
-            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
-              <Truck size={18} className="text-yellow-400" />
+          <section className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 shadow-sm">
+            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2 text-gray-900">
+              <Truck size={18} className="text-yellow-500" />
               Shipping Details
             </h2>
 
             <div className="space-y-4">
               <Field label="Full Name *">
-                <input
-                  type="text"
-                  value={form.full_name}
+                <input type="text" value={form.full_name}
                   onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-                  placeholder="Enter your full name"
-                  className={inputCls}
-                />
+                  placeholder="Enter your full name" className={inputCls} />
               </Field>
 
               <Field label="Phone Number *">
-                <input
-                  type="tel"
-                  value={form.phone}
+                <input type="tel" value={form.phone}
                   onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                  placeholder="03XX-XXXXXXX"
-                  className={inputCls}
-                />
+                  placeholder="03XX-XXXXXXX" className={inputCls} />
               </Field>
 
               <Field label="Delivery Address *">
-                <textarea
-                  value={form.address}
+                <textarea value={form.address}
                   onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
-                  rows={3}
-                  placeholder="House/Flat #, Street, Area"
-                  className={`${inputCls} resize-none`}
-                />
+                  rows={3} placeholder="House/Flat #, Street, Area"
+                  className={`${inputCls} resize-none`} />
               </Field>
 
               <Field label="City *">
-                <select
-                  value={form.city_type}
+                <select value={form.city_type}
                   onChange={e => setForm(f => ({ ...f, city_type: e.target.value }))}
-                  className={inputCls}
-                >
+                  className={inputCls}>
                   <option value="karachi">Karachi</option>
                   <option value="other">Other City</option>
                 </select>
@@ -211,37 +189,28 @@ export default function CheckoutPage() {
 
               {form.city_type === 'other' && (
                 <Field label="City Name">
-                  <input
-                    type="text"
-                    value={form.city_name}
+                  <input type="text" value={form.city_name}
                     onChange={e => setForm(f => ({ ...f, city_name: e.target.value }))}
-                    placeholder="e.g. Lahore, Islamabad, Faisalabad…"
-                    className={inputCls}
-                  />
+                    placeholder="e.g. Lahore, Islamabad, Faisalabad…" className={inputCls} />
                 </Field>
               )}
 
               <Field label="Order Notes (optional)">
-                <input
-                  type="text"
-                  value={form.notes}
+                <input type="text" value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  placeholder="Any special instructions?"
-                  className={inputCls}
-                />
+                  placeholder="Any special instructions?" className={inputCls} />
               </Field>
             </div>
           </section>
 
           {/* Payment method */}
-          <section className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6">
-            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
-              <CreditCard size={18} className="text-yellow-400" />
+          <section className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 shadow-sm">
+            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2 text-gray-900">
+              <CreditCard size={18} className="text-yellow-500" />
               Payment Method
             </h2>
 
             <div className="space-y-3">
-              {/* COD option */}
               <PaymentOption
                 id="cod"
                 selected={form.payment_method === 'cod'}
@@ -251,7 +220,6 @@ export default function CheckoutPage() {
                 subtitle="Pay when your order arrives at your doorstep"
               />
 
-              {/* Bank Transfer option */}
               <PaymentOption
                 id="bank_transfer"
                 selected={form.payment_method === 'bank_transfer'}
@@ -261,51 +229,43 @@ export default function CheckoutPage() {
                 subtitle="Pay via Easypaisa or Allied Bank — order confirmed after payment proof"
               />
 
-              {/* Bank details panel */}
               {form.payment_method === 'bank_transfer' && (
                 <div className="mt-2 space-y-3 pt-1">
-                  {/* Easypaisa */}
-                  <div className="bg-green-900/20 border border-green-700/30 rounded-xl p-4">
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Smartphone size={16} className="text-green-400" />
-                      <span className="text-sm font-semibold text-green-400">Easypaisa</span>
+                      <Smartphone size={16} className="text-green-600" />
+                      <span className="text-sm font-semibold text-green-700">Easypaisa</span>
                     </div>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-gray-600">
                       Account Number:{' '}
-                      <span className="font-mono text-white">{BANK_DETAILS.easypaisa.number}</span>
+                      <span className="font-mono text-gray-900">{BANK_DETAILS.easypaisa.number}</span>
                     </p>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-gray-600">
                       Account Name:{' '}
-                      <span className="text-white">{BANK_DETAILS.easypaisa.name}</span>
+                      <span className="text-gray-900">{BANK_DETAILS.easypaisa.name}</span>
                     </p>
                   </div>
 
-                  {/* Allied Bank */}
-                  <div className="bg-blue-900/20 border border-blue-700/30 rounded-xl p-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Building2 size={16} className="text-blue-400" />
-                      <span className="text-sm font-semibold text-blue-400">Allied Bank (ABL)</span>
+                      <Building2 size={16} className="text-blue-600" />
+                      <span className="text-sm font-semibold text-blue-700">Allied Bank (ABL)</span>
                     </div>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-gray-600">
                       Account #:{' '}
-                      <span className="font-mono text-white">{BANK_DETAILS.allied.accountNo}</span>
+                      <span className="font-mono text-gray-900">{BANK_DETAILS.allied.accountNo}</span>
                     </p>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-sm text-gray-600">
                       Account Title:{' '}
-                      <span className="text-white">{BANK_DETAILS.allied.title}</span>
+                      <span className="text-gray-900">{BANK_DETAILS.allied.title}</span>
                     </p>
                   </div>
 
-                  {/* Instructions */}
-                  <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-xl p-4">
-                    <p className="text-xs text-yellow-300 leading-relaxed">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                    <p className="text-xs text-yellow-800 leading-relaxed">
                       After making the payment, please send the payment screenshot to our Instagram{' '}
-                      <a
-                        href="https://www.instagram.com/brandsgalaxy22/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold underline"
-                      >
+                      <a href="https://www.instagram.com/brandsgalaxy22/" target="_blank" rel="noopener noreferrer"
+                        className="font-semibold underline">
                         @brandsgalaxy22
                       </a>{' '}
                       or Facebook. Your order will be confirmed within 24 hours.
@@ -317,35 +277,34 @@ export default function CheckoutPage() {
           </section>
         </div>
 
-        {/* ── RIGHT COLUMN — Order Summary ── */}
+        {/* RIGHT COLUMN — Order Summary */}
         <div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 sm:p-6 sticky top-24">
-            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2">
-              <ShoppingBag size={18} className="text-yellow-400" />
+          <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 sticky top-24 shadow-sm">
+            <h2 className="font-semibold text-lg mb-5 flex items-center gap-2 text-gray-900">
+              <ShoppingBag size={18} className="text-yellow-500" />
               Order Summary
             </h2>
 
-            {/* Items list */}
             <div className="space-y-3 mb-5 max-h-64 overflow-y-auto pr-1">
               {items.map(item => {
                 const itemPrice = Number(item.variantPrice ?? item.discount_price ?? item.price);
                 const imageSrc = item.images?.[0];
                 return (
                   <div key={item.cartKey} className="flex items-center gap-3">
-                    <div className="w-14 h-14 bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
+                    <div className="w-14 h-14 bg-gray-50 border border-gray-100 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center">
                       {imageSrc
                         ? <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none'; }} />
                         : <span className="text-xl">✨</span>
                       }
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white truncate">{item.name}</p>
+                      <p className="text-sm text-gray-900 truncate font-medium">{item.name}</p>
                       {item.selectedSize && (
-                        <span className="text-xs text-yellow-500">{item.selectedSize}</span>
+                        <span className="text-xs text-yellow-600">{item.selectedSize}</span>
                       )}
                       <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
                     </div>
-                    <p className="text-sm font-semibold text-yellow-400 flex-shrink-0">
+                    <p className="text-sm font-semibold text-yellow-600 flex-shrink-0">
                       {formatPrice(itemPrice * item.quantity)}
                     </p>
                   </div>
@@ -353,39 +312,37 @@ export default function CheckoutPage() {
               })}
             </div>
 
-            {/* Price breakdown */}
-            <div className="border-t border-gray-700 pt-4 space-y-2.5 text-sm">
-              <div className="flex justify-between text-gray-400">
+            <div className="border-t border-gray-200 pt-4 space-y-2.5 text-sm">
+              <div className="flex justify-between text-gray-500">
                 <span>Subtotal</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span className="text-gray-900">{formatPrice(subtotal)}</span>
               </div>
 
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-500">
                 <span>Shipping ({cityName})</span>
                 {shipping === 0
-                  ? <span className="text-green-400">Free</span>
-                  : <span>{formatPrice(shipping)}</span>
+                  ? <span className="text-green-600 font-semibold">Free</span>
+                  : <span className="text-gray-900">{formatPrice(shipping)}</span>
                 }
               </div>
 
               {subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD && (
-                <p className="text-xs text-gray-600 -mt-1">
+                <p className="text-xs text-gray-400 -mt-1">
                   Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for free shipping
                 </p>
               )}
 
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-500">
                 <span>Tax (4%)</span>
-                <span>{formatPrice(tax)}</span>
+                <span className="text-gray-900">{formatPrice(tax)}</span>
               </div>
 
-              <div className="border-t border-gray-700 pt-3 flex justify-between font-bold text-white">
+              <div className="border-t border-gray-200 pt-3 flex justify-between font-bold text-gray-900">
                 <span>Grand Total</span>
-                <span className="text-yellow-400 text-lg">{formatPrice(grandTotal)}</span>
+                <span className="text-yellow-600 text-lg">{formatPrice(grandTotal)}</span>
               </div>
             </div>
 
-            {/* Place order button */}
             <button
               onClick={handlePlaceOrder}
               disabled={loading}
@@ -400,7 +357,7 @@ export default function CheckoutPage() {
               )}
             </button>
 
-            <p className="text-xs text-gray-600 text-center mt-3">
+            <p className="text-xs text-gray-400 text-center mt-3">
               By placing your order you agree to our terms & conditions.
             </p>
           </div>
@@ -411,12 +368,10 @@ export default function CheckoutPage() {
 }
 
 
-// ── Sub-components ────────────────────────────────────────────
-
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-sm text-gray-400 mb-1">{label}</label>
+      <label className="block text-sm text-gray-600 mb-1 font-medium">{label}</label>
       {children}
     </div>
   );
@@ -429,22 +384,19 @@ function PaymentOption({ selected, onSelect, icon, title, subtitle }) {
       onClick={onSelect}
       className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${
         selected
-          ? 'border-yellow-500 bg-yellow-500/10'
-          : 'border-gray-700 hover:border-gray-600'
+          ? 'border-yellow-500 bg-yellow-50'
+          : 'border-gray-200 hover:border-gray-300'
       }`}
     >
-      {/* Radio dot */}
-      <div
-        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-          selected ? 'border-yellow-500' : 'border-gray-500'
-        }`}
-      >
+      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+        selected ? 'border-yellow-500' : 'border-gray-300'
+      }`}>
         {selected && <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />}
       </div>
 
       <div className="flex-1">
-        <p className="font-semibold text-sm text-white">{title}</p>
-        <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>
+        <p className="font-semibold text-sm text-gray-900">{title}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>
       </div>
 
       {icon}
@@ -453,76 +405,68 @@ function PaymentOption({ selected, onSelect, icon, title, subtitle }) {
 }
 
 
-// ── Order Success Screen ──────────────────────────────────────
-
 function OrderSuccess({ order }) {
   const isBankTransfer = order.paymentMethod === 'bank_transfer';
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-      <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-6">
-        <CheckCircle size={40} className="text-green-400" />
+      <div className="w-20 h-20 rounded-full bg-green-50 border border-green-200 flex items-center justify-center mx-auto mb-6">
+        <CheckCircle size={40} className="text-green-500" />
       </div>
 
-      <h1 className="font-heading text-3xl font-bold mb-2">Order Placed!</h1>
-      <p className="text-gray-400 mb-1 text-sm">Your order number is:</p>
-      <p className="text-2xl font-bold text-yellow-400 mb-8">{order.order_number}</p>
+      <h1 className="font-heading text-3xl font-bold mb-2 text-gray-900">Order Placed!</h1>
+      <p className="text-gray-500 mb-1 text-sm">Your order number is:</p>
+      <p className="text-2xl font-bold text-yellow-600 mb-8">{order.order_number}</p>
 
       {!isBankTransfer ? (
-        /* COD confirmation */
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-left mb-8">
-          <p className="text-sm font-semibold text-green-400 mb-2">✅ Cash on Delivery — Confirmed</p>
-          <p className="text-sm text-gray-300">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-left mb-8 shadow-sm">
+          <p className="text-sm font-semibold text-green-600 mb-2">✅ Cash on Delivery — Confirmed</p>
+          <p className="text-sm text-gray-600">
             Your order has been placed successfully. Our team will contact you on the provided phone
             number to confirm delivery details.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
-            <div className="bg-gray-800 rounded-lg p-3">
+            <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
               <p className="text-gray-400 text-xs">Subtotal</p>
-              <p className="text-white font-semibold">{formatPrice(order.subtotal)}</p>
+              <p className="text-gray-900 font-semibold">{formatPrice(order.subtotal)}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-3">
+            <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
               <p className="text-gray-400 text-xs">Shipping</p>
-              <p className="text-white font-semibold">{order.shipping === 0 ? 'Free' : formatPrice(order.shipping)}</p>
+              <p className="text-gray-900 font-semibold">{order.shipping === 0 ? 'Free' : formatPrice(order.shipping)}</p>
             </div>
-            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <p className="text-gray-400 text-xs">Total</p>
-              <p className="text-yellow-400 font-bold">{formatPrice(order.total)}</p>
+              <p className="text-yellow-600 font-bold">{formatPrice(order.total)}</p>
             </div>
           </div>
         </div>
       ) : (
-        /* Bank Transfer instructions */
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-left mb-8 space-y-4">
-          <p className="text-sm font-semibold text-yellow-400">💳 Payment Instructions</p>
-          <p className="text-sm text-gray-300">
+        <div className="bg-white border border-gray-200 rounded-xl p-5 text-left mb-8 space-y-4 shadow-sm">
+          <p className="text-sm font-semibold text-yellow-600">💳 Payment Instructions</p>
+          <p className="text-sm text-gray-600">
             Please transfer{' '}
-            <span className="font-bold text-white">{formatPrice(order.total)}</span> to one of the
+            <span className="font-bold text-gray-900">{formatPrice(order.total)}</span> to one of the
             accounts below:
           </p>
 
           <div className="space-y-3">
-            <div className="bg-green-900/20 border border-green-700/30 rounded-lg p-3">
-              <p className="text-xs font-semibold text-green-400 mb-1">🟢 Easypaisa</p>
-              <p className="text-sm text-white font-mono">{BANK_DETAILS.easypaisa.number}</p>
-              <p className="text-xs text-gray-400">{BANK_DETAILS.easypaisa.name}</p>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-xs font-semibold text-green-700 mb-1">🟢 Easypaisa</p>
+              <p className="text-sm text-gray-900 font-mono">{BANK_DETAILS.easypaisa.number}</p>
+              <p className="text-xs text-gray-500">{BANK_DETAILS.easypaisa.name}</p>
             </div>
-            <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-3">
-              <p className="text-xs font-semibold text-blue-400 mb-1">🔵 Allied Bank (ABL)</p>
-              <p className="text-sm text-white font-mono">{BANK_DETAILS.allied.accountNo}</p>
-              <p className="text-xs text-gray-400">Account Title: {BANK_DETAILS.allied.title}</p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs font-semibold text-blue-700 mb-1">🔵 Allied Bank (ABL)</p>
+              <p className="text-sm text-gray-900 font-mono">{BANK_DETAILS.allied.accountNo}</p>
+              <p className="text-xs text-gray-500">Account Title: {BANK_DETAILS.allied.title}</p>
             </div>
           </div>
 
-          <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-lg p-3">
-            <p className="text-xs text-yellow-300 leading-relaxed">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <p className="text-xs text-yellow-800 leading-relaxed">
               After payment, send the screenshot to our Instagram{' '}
-              <a
-                href="https://www.instagram.com/brandsgalaxy22/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold underline"
-              >
+              <a href="https://www.instagram.com/brandsgalaxy22/" target="_blank" rel="noopener noreferrer"
+                className="font-semibold underline">
                 @brandsgalaxy22
               </a>{' '}
               or Facebook. Your order will be confirmed within 24 hours.
@@ -532,16 +476,10 @@ function OrderSuccess({ order }) {
       )}
 
       <div className="flex gap-3 justify-center">
-        <Link
-          href="/products"
-          className="btn-gold px-6 py-2.5 rounded-lg font-semibold text-sm"
-        >
+        <Link href="/products" className="btn-gold px-6 py-2.5 rounded-lg font-semibold text-sm">
           Continue Shopping
         </Link>
-        <Link
-          href="/"
-          className="px-6 py-2.5 rounded-lg font-semibold text-sm border border-gray-700 hover:border-gray-500 transition-colors"
-        >
+        <Link href="/" className="px-6 py-2.5 rounded-lg font-semibold text-sm border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors">
           Go Home
         </Link>
       </div>
@@ -550,5 +488,5 @@ function OrderSuccess({ order }) {
 }
 
 const inputCls =
-  'w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm ' +
-  'focus:border-yellow-500 focus:outline-none transition-colors placeholder-gray-600';
+  'w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm ' +
+  'focus:border-yellow-500 focus:outline-none transition-colors placeholder-gray-400';

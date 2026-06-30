@@ -25,8 +25,8 @@ img:not(.carousel-img) {
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #111827;
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -39,15 +39,15 @@ h1, h2, h3, h4 {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #f3f4f6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #FFD700;
+  background: #DAA520;
   border-radius: 3px;
 }
 
 .gold-gradient {
-  background: linear-gradient(135deg, #FFD700, #DAA520);
+  background: linear-gradient(135deg, #B8860B, #DAA520);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -57,7 +57,7 @@ h1, h2, h3, h4 {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
 }
 
 .btn-gold {

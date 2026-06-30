@@ -56,34 +56,34 @@ export default function ProductCard({ product }) {
   return (
     <>
       <Link href={`/products/${product.slug}`}>
-        <div className="bg-luxury-darkGray border border-gray-800 rounded-lg overflow-hidden card-hover group cursor-pointer">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover group cursor-pointer shadow-sm">
           {/* Image */}
-          <div className="relative bg-gray-900 h-44 sm:h-56 flex items-center justify-center overflow-hidden">
+          <div className="relative bg-gray-50 h-44 sm:h-56 flex items-center justify-center overflow-hidden">
             <ProductImage images={product.images} name={product.name} />
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 absolute inset-0">
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 absolute inset-0">
               <span className="text-4xl">✨</span>
             </div>
 
             {/* Badges */}
             {product.discount_price && (
-              <span className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded font-semibold z-20">SALE</span>
+              <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold z-20">SALE</span>
             )}
             {product.is_featured && !product.discount_price && (
-              <span className="absolute top-3 left-3 bg-yellow-500 text-black text-xs px-2 py-1 rounded font-semibold z-20">FEATURED</span>
+              <span className="absolute top-3 left-3 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold z-20">FEATURED</span>
             )}
 
             {/* Hover action buttons */}
             <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-x-2 sm:group-hover:translate-x-0 transition-all duration-200">
               <button
                 onClick={handleWishlist}
-                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-colors ${wishlisted ? 'bg-red-500 text-white' : 'bg-black/70 text-white hover:bg-red-500'}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${wishlisted ? 'bg-red-500 text-white' : 'bg-white text-gray-600 hover:bg-red-500 hover:text-white'}`}
                 title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
               >
                 <Heart size={14} className={wishlisted ? 'fill-white' : ''} />
               </button>
               <button
                 onClick={handleQuickView}
-                className="w-8 h-8 rounded-full bg-black/70 text-white hover:bg-yellow-500 hover:text-black flex items-center justify-center shadow-lg transition-colors"
+                className="w-8 h-8 rounded-full bg-white text-gray-600 hover:bg-yellow-400 hover:text-black flex items-center justify-center shadow-md transition-colors"
                 title="Quick view"
               >
                 <Eye size={14} />
@@ -93,15 +93,15 @@ export default function ProductCard({ product }) {
 
           {/* Info */}
           <div className="p-3 sm:p-4">
-            <p className="text-xs text-yellow-500 uppercase tracking-wider mb-1">{product.brand}</p>
-            <h3 className="text-white font-medium text-sm leading-snug mb-2 line-clamp-2 min-h-[2.5rem]">
+            <p className="text-xs text-yellow-600 uppercase tracking-wider mb-1 font-semibold">{product.brand}</p>
+            <h3 className="text-gray-900 font-medium text-sm leading-snug mb-2 line-clamp-2 min-h-[2.5rem]">
               {product.name}
             </h3>
 
             {Number(product.rating_count) > 0 && (
               <div className="flex items-center gap-1 mb-2">
                 <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-500">
                   {Number(product.rating_average).toFixed(1)} ({product.rating_count})
                 </span>
               </div>
@@ -109,9 +109,9 @@ export default function ProductCard({ product }) {
 
             <div className="flex items-center justify-between mt-3">
               <div>
-                <span className="text-yellow-400 font-semibold">{formatPrice(price)}</span>
+                <span className="text-yellow-600 font-bold">{formatPrice(price)}</span>
                 {originalPrice && (
-                  <span className="text-gray-500 text-sm line-through ml-2">{formatPrice(originalPrice)}</span>
+                  <span className="text-gray-400 text-sm line-through ml-2">{formatPrice(originalPrice)}</span>
                 )}
               </div>
               <button
@@ -125,7 +125,7 @@ export default function ProductCard({ product }) {
             </div>
 
             {product.stock_quantity <= 0 && (
-              <p className="text-red-400 text-xs mt-2">Out of stock</p>
+              <p className="text-red-500 text-xs mt-2">Out of stock</p>
             )}
           </div>
         </div>

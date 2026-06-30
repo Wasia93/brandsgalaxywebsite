@@ -5,6 +5,8 @@ import { Search, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { productsAPI } from '@/lib/api';
 
+const inputCls = "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-900 text-sm focus:outline-none focus:border-yellow-500 placeholder-gray-400";
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
@@ -16,7 +18,7 @@ function ProductsContent() {
   const [filters, setFilters] = useState({
     search: '',
     category: searchParams.get('category') || '',
-    brand: '',
+    brand: searchParams.get('brand') || '',
     min_price: '',
     max_price: '',
     is_featured: searchParams.get('is_featured') === 'true' ? true : undefined,
@@ -45,11 +47,11 @@ function ProductsContent() {
       .finally(() => setLoading(false));
   }, [filters]);
 
-  // Sync filters when URL params change (e.g. navbar links)
   useEffect(() => {
     const category = searchParams.get('category') || '';
+    const brand = searchParams.get('brand') || '';
     const is_featured = searchParams.get('is_featured') === 'true' ? true : undefined;
-    setFilters(f => ({ ...f, category, is_featured }));
+    setFilters(f => ({ ...f, category, brand, is_featured }));
   }, [searchParams]);
 
   useEffect(() => {
@@ -57,9 +59,7 @@ function ProductsContent() {
     productsAPI.getBrands().then((r) => setBrands(r.data)).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
   const updateFilter = (key, value) => setFilters((f) => ({ ...f, [key]: value }));
   const clearFilters = () => setFilters({ search: '', category: '', brand: '', min_price: '', max_price: '', is_featured: undefined, in_stock: false, sort_by: 'created_at', sort_order: 'desc' });
@@ -68,8 +68,8 @@ function ProductsContent() {
     <div className="max-w-7xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="mb-8">
-        <p className="text-yellow-400 text-sm uppercase tracking-widest mb-1">Our Collection</p>
-        <h1 className="font-heading text-4xl font-bold">All Products</h1>
+        <p className="text-yellow-600 text-sm uppercase tracking-widest mb-1 font-semibold">Our Collection</p>
+        <h1 className="font-heading text-4xl font-bold text-gray-900">All Products</h1>
       </div>
 
       {/* Search + Sort bar */}
@@ -81,7 +81,7 @@ function ProductsContent() {
             placeholder="Search products, brands..."
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500"
+            className="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500"
           />
         </div>
         <select
@@ -90,7 +90,7 @@ function ProductsContent() {
             const [by, order] = e.target.value.split('_');
             setFilters((f) => ({ ...f, sort_by: by, sort_order: order }));
           }}
-          className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500"
+          className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-yellow-500"
         >
           <option value="created_at_desc">Newest</option>
           <option value="created_at_asc">Oldest</option>
@@ -100,7 +100,7 @@ function ProductsContent() {
         </select>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 border border-gray-700 rounded-lg px-4 py-3 hover:border-yellow-500 transition-colors"
+          className="flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-3 hover:border-yellow-500 hover:text-yellow-700 transition-colors text-gray-700 bg-white"
         >
           <SlidersHorizontal size={18} />
           Filters
@@ -109,59 +109,39 @@ function ProductsContent() {
 
       {/* Filter panel */}
       {showFilters && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Category</label>
-            <select
-              value={filters.category}
-              onChange={(e) => updateFilter('category', e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-500"
-            >
+            <label className="text-xs text-gray-500 mb-1 block font-medium">Category</label>
+            <select value={filters.category} onChange={(e) => updateFilter('category', e.target.value)} className={inputCls}>
               <option value="">All Categories</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.slug}>{c.name}</option>
-              ))}
+              {categories.map((c) => <option key={c.id} value={c.slug}>{c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Brand</label>
-            <select
-              value={filters.brand}
-              onChange={(e) => updateFilter('brand', e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-500"
-            >
+            <label className="text-xs text-gray-500 mb-1 block font-medium">Brand</label>
+            <select value={filters.brand} onChange={(e) => updateFilter('brand', e.target.value)} className={inputCls}>
               <option value="">All Brands</option>
               {brands.map((b) => <option key={b} value={b}>{b}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Min Price (Rs.)</label>
-            <input
-              type="number" min="0" value={filters.min_price}
-              onChange={(e) => updateFilter('min_price', e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-500"
-              placeholder="0"
-            />
+            <label className="text-xs text-gray-500 mb-1 block font-medium">Min Price (Rs.)</label>
+            <input type="number" min="0" value={filters.min_price} onChange={(e) => updateFilter('min_price', e.target.value)} className={inputCls} placeholder="0" />
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Max Price (Rs.)</label>
-            <input
-              type="number" min="0" value={filters.max_price}
-              onChange={(e) => updateFilter('max_price', e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-yellow-500"
-              placeholder="999"
-            />
+            <label className="text-xs text-gray-500 mb-1 block font-medium">Max Price (Rs.)</label>
+            <input type="number" min="0" value={filters.max_price} onChange={(e) => updateFilter('max_price', e.target.value)} className={inputCls} placeholder="99999" />
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="in_stock" checked={filters.in_stock} onChange={(e) => updateFilter('in_stock', e.target.checked)} className="accent-yellow-400" />
-            <label htmlFor="in_stock" className="text-sm text-gray-300">In Stock Only</label>
+            <input type="checkbox" id="in_stock" checked={filters.in_stock} onChange={(e) => updateFilter('in_stock', e.target.checked)} className="accent-yellow-500" />
+            <label htmlFor="in_stock" className="text-sm text-gray-700">In Stock Only</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="featured" checked={!!filters.is_featured} onChange={(e) => updateFilter('is_featured', e.target.checked || undefined)} className="accent-yellow-400" />
-            <label htmlFor="featured" className="text-sm text-gray-300">Featured Only</label>
+            <input type="checkbox" id="featured" checked={!!filters.is_featured} onChange={(e) => updateFilter('is_featured', e.target.checked || undefined)} className="accent-yellow-500" />
+            <label htmlFor="featured" className="text-sm text-gray-700">Featured Only</label>
           </div>
           <div className="md:col-span-2 flex justify-end">
-            <button onClick={clearFilters} className="flex items-center gap-1 text-sm text-gray-400 hover:text-white">
+            <button onClick={clearFilters} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900">
               <X size={14} /> Clear all filters
             </button>
           </div>
@@ -170,21 +150,21 @@ function ProductsContent() {
 
       {/* Results count */}
       {!loading && (
-        <p className="text-gray-500 text-sm mb-4">{products.length} product{products.length !== 1 ? 's' : ''} found</p>
+        <p className="text-gray-400 text-sm mb-4">{products.length} product{products.length !== 1 ? 's' : ''} found</p>
       )}
 
       {/* Grid */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="bg-gray-900 rounded-lg h-72 animate-pulse" />
+            <div key={i} className="bg-gray-100 rounded-xl h-72 animate-pulse" />
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-24 text-gray-500">
+        <div className="text-center py-24 text-gray-400">
           <p className="text-5xl mb-4">🔍</p>
-          <p className="text-lg">No products found.</p>
-          <button onClick={clearFilters} className="mt-4 text-yellow-400 underline text-sm">Clear filters</button>
+          <p className="text-lg text-gray-600">No products found.</p>
+          <button onClick={clearFilters} className="mt-4 text-yellow-600 underline text-sm">Clear filters</button>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -201,7 +181,7 @@ export default function ProductsPage() {
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="bg-gray-900 rounded-lg h-72 animate-pulse" />
+            <div key={i} className="bg-gray-100 rounded-xl h-72 animate-pulse" />
           ))}
         </div>
       </div>

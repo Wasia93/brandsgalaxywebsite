@@ -35,6 +35,7 @@ export default function EditProductPage() {
     is_active: true,
     images: [],
     extra_data: [],
+    variants: [],
   });
 
   useEffect(() => {
@@ -48,8 +49,14 @@ export default function EditProductPage() {
         ]);
         setCategories(catRes.data);
         const p = prodRes.data;
+        const rawVariants = p.extra_data?.variants;
+        const variantsArr = Array.isArray(rawVariants)
+          ? rawVariants.map((v) => ({ size: String(v.size || ''), price: String(v.price || ''), stock: String(v.stock ?? '') }))
+          : [];
         const extraArr = p.extra_data
-          ? Object.entries(p.extra_data).map(([key, value]) => ({ key, value: String(value) }))
+          ? Object.entries(p.extra_data)
+              .filter(([key]) => key !== 'variants')
+              .map(([key, value]) => ({ key, value: String(value) }))
           : [];
         setForm({
           name: p.name || '',
@@ -65,6 +72,7 @@ export default function EditProductPage() {
           is_active: p.is_active ?? true,
           images: p.images || [],
           extra_data: extraArr,
+          variants: variantsArr,
         });
       } catch {
         toast.error('Failed to load product');
@@ -103,6 +111,12 @@ export default function EditProductPage() {
   const removeExtra = (idx) =>
     setForm((f) => ({ ...f, extra_data: f.extra_data.filter((_, i) => i !== idx) }));
 
+  const addVariant = () => setForm((f) => ({ ...f, variants: [...f.variants, { size: '', price: '', stock: '' }] }));
+  const updateVariant = (idx, field, val) =>
+    setForm((f) => ({ ...f, variants: f.variants.map((v, i) => i === idx ? { ...v, [field]: val } : v) }));
+  const removeVariant = (idx) =>
+    setForm((f) => ({ ...f, variants: f.variants.filter((_, i) => i !== idx) }));
+
   const handleDelete = async () => {
     if (!confirm(`Delete "${form.name}"? This will hide it from the store.`)) return;
     setDeleting(true);
@@ -120,10 +134,22 @@ export default function EditProductPage() {
     e.preventDefault();
     if (!form.price || isNaN(Number(form.price))) { toast.error('Enter a valid price'); return; }
 
+    const filledVariants = form.variants.filter((v) => v.size.trim());
+    for (const v of filledVariants) {
+      if (!v.price || isNaN(Number(v.price))) { toast.error(`Enter a valid price for size "${v.size}"`); return; }
+    }
+
     const extraObj = form.extra_data.reduce((acc, { key, value }) => {
       if (key.trim()) acc[key.trim()] = value;
       return acc;
     }, {});
+    if (filledVariants.length > 0) {
+      extraObj.variants = filledVariants.map((v) => ({
+        size: v.size.trim(),
+        price: Number(v.price),
+        stock: Number(v.stock) || 0,
+      }));
+    }
 
     const payload = {
       name: form.name,
@@ -158,7 +184,7 @@ export default function EditProductPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-10 space-y-4">
-        {[1,2,3].map(i => <div key={i} className="bg-gray-900 rounded-2xl h-40 animate-pulse" />)}
+        {[1,2,3].map(i => <div key={i} className="bg-gray-100 rounded-2xl h-40 animate-pulse" />)}
       </div>
     );
   }
@@ -166,46 +192,47 @@ export default function EditProductPage() {
   if (success) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <CheckCircle size={56} className="text-green-400" />
-        <h2 className="font-heading text-3xl font-bold">Product Updated!</h2>
+        <CheckCircle size={56} className="text-green-500" />
+        <h2 className="font-heading text-3xl font-bold text-gray-900">Product Updated!</h2>
         <p className="text-gray-500">Redirecting to admin…</p>
       </div>
     );
   }
 
-  const inputCls = "w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 transition-colors text-sm";
-  const labelCls = "block text-sm text-gray-400 mb-1.5";
+  const inputCls = "w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-colors text-sm";
+  const labelCls = "block text-sm text-gray-600 mb-1.5 font-medium";
+  const variantInputCls = "bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-yellow-500";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-500 hover:text-white mb-6 text-sm transition-colors">
+      <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-400 hover:text-gray-700 mb-6 text-sm transition-colors">
         <ArrowLeft size={16} /> Back to Admin
       </button>
       <div className="mb-8">
-        <p className="text-yellow-400 text-xs uppercase tracking-widest mb-1">Admin</p>
-        <h1 className="font-heading text-4xl font-bold">Edit Product</h1>
+        <p className="text-yellow-600 text-xs uppercase tracking-widest mb-1">Admin</p>
+        <h1 className="font-heading text-4xl font-bold text-gray-900">Edit Product</h1>
         <p className="text-gray-500 text-sm mt-1">{form.name}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
 
         {/* Images */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-          <h2 className="font-semibold text-white mb-4">Product Images</h2>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+          <h2 className="font-semibold text-gray-900 mb-4">Product Images</h2>
           <div className="flex flex-wrap gap-4">
             {form.images.map((url, i) => (
-              <div key={i} className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-700 group">
+              <div key={i} className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-200 group">
                 <img src={getImageUrl(url)} alt="" className="w-full h-full object-cover" />
                 <button type="button" onClick={() => removeImage(i)}
-                  className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Trash2 size={18} className="text-red-400" />
+                  className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Trash2 size={18} className="text-white" />
                 </button>
               </div>
             ))}
             <button type="button" onClick={() => fileRef.current?.click()} disabled={uploadingImage}
-              className="w-28 h-28 border-2 border-dashed border-gray-700 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-yellow-500/50 transition-colors disabled:opacity-50 text-gray-500 hover:text-yellow-400">
+              className="w-28 h-28 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-yellow-400 transition-colors disabled:opacity-50 text-gray-400 hover:text-yellow-500">
               {uploadingImage
-                ? <div className="w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
+                ? <div className="w-5 h-5 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
                 : <><Upload size={20} /><span className="text-xs text-center leading-tight">Upload<br />image</span></>}
             </button>
           </div>
@@ -213,8 +240,8 @@ export default function EditProductPage() {
         </div>
 
         {/* Basic Info */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 grid md:grid-cols-2 gap-5">
-          <h2 className="font-semibold text-white md:col-span-2">Basic Information</h2>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 grid md:grid-cols-2 gap-5 shadow-sm">
+          <h2 className="font-semibold text-gray-900 md:col-span-2">Basic Information</h2>
 
           <div className="md:col-span-2">
             <label className={labelCls}>Product Name <span className="text-red-400">*</span></label>
@@ -236,14 +263,15 @@ export default function EditProductPage() {
 
           <div className="md:col-span-2">
             <label className={labelCls}>Description</label>
-            <textarea rows={4} value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+            <textarea rows={4} value={form.description}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               className={`${inputCls} resize-none`} />
           </div>
         </div>
 
         {/* Pricing & Inventory */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 grid md:grid-cols-3 gap-5">
-          <h2 className="font-semibold text-white md:col-span-3">Pricing & Inventory</h2>
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 grid md:grid-cols-3 gap-5 shadow-sm">
+          <h2 className="font-semibold text-gray-900 md:col-span-3">Pricing & Inventory</h2>
 
           <div>
             <label className={labelCls}>Price (Rs.) <span className="text-red-400">*</span></label>
@@ -252,7 +280,7 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label className={labelCls}>Sale Price (Rs.) <span className="text-gray-600">(optional)</span></label>
+            <label className={labelCls}>Sale Price (Rs.) <span className="text-gray-400 font-normal">(optional)</span></label>
             <input type="number" step="0.01" min="0.01" value={form.discount_price}
               onChange={(e) => setForm((f) => ({ ...f, discount_price: e.target.value }))} className={inputCls} />
           </div>
@@ -264,7 +292,7 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label className={labelCls}>SKU <span className="text-gray-600">(optional)</span></label>
+            <label className={labelCls}>SKU <span className="text-gray-400 font-normal">(optional)</span></label>
             <input value={form.sku} onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} className={inputCls} />
           </div>
 
@@ -275,32 +303,74 @@ export default function EditProductPage() {
             ].map(({ key, label }) => (
               <label key={key} className="flex items-center gap-2 cursor-pointer">
                 <div onClick={() => setForm((f) => ({ ...f, [key]: !f[key] }))}
-                  className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${form[key] ? 'bg-yellow-500 border-yellow-500' : 'border-gray-600'}`}>
-                  {form[key] && <span className="text-black text-xs font-bold">✓</span>}
+                  className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${form[key] ? 'bg-yellow-500 border-yellow-500' : 'border-gray-300'}`}>
+                  {form[key] && <span className="text-white text-xs font-bold">✓</span>}
                 </div>
-                <span className="text-gray-300 text-sm">{label}</span>
+                <span className="text-gray-700 text-sm">{label}</span>
               </label>
             ))}
           </div>
         </div>
 
+        {/* Size Variants */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="font-semibold text-gray-900">Size Variants <span className="text-gray-400 font-normal text-sm">(optional — for products with multiple sizes)</span></h2>
+            <button type="button" onClick={addVariant} className="flex items-center gap-1.5 text-yellow-600 hover:text-yellow-700 text-sm transition-colors">
+              <Plus size={15} /> Add size
+            </button>
+          </div>
+          <p className="text-gray-400 text-xs mb-4">Each size can have its own price. When a customer selects a size, the price updates automatically.</p>
+
+          {form.variants.length === 0 && (
+            <p className="text-gray-400 text-sm">No size variants. Click "Add size" to add options like 30ml, 50ml, S, M, L, etc.</p>
+          )}
+
+          {form.variants.length > 0 && (
+            <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 mb-2">
+              <span className="text-xs text-gray-400 uppercase tracking-wide">Size / Name</span>
+              <span className="text-xs text-gray-400 uppercase tracking-wide">Price (Rs.)</span>
+              <span className="text-xs text-gray-400 uppercase tracking-wide">Stock Qty</span>
+              <span />
+            </div>
+          )}
+
+          <div className="space-y-2">
+            {form.variants.map((v, i) => (
+              <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-center">
+                <input value={v.size} onChange={(e) => updateVariant(i, 'size', e.target.value)}
+                  placeholder="e.g. 30ml or S" className={variantInputCls} />
+                <input type="number" min="0" step="0.01" value={v.price}
+                  onChange={(e) => updateVariant(i, 'price', e.target.value)}
+                  placeholder="1500" className={variantInputCls} />
+                <input type="number" min="0" value={v.stock}
+                  onChange={(e) => updateVariant(i, 'stock', e.target.value)}
+                  placeholder="10" className={variantInputCls} />
+                <button type="button" onClick={() => removeVariant(i)} className="text-gray-400 hover:text-red-500 transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Extra Details */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-white">Product Details <span className="text-gray-600 font-normal text-sm">(size, SPF, ingredients…)</span></h2>
-            <button type="button" onClick={addExtraField} className="flex items-center gap-1.5 text-yellow-400 hover:text-yellow-300 text-sm">
+            <h2 className="font-semibold text-gray-900">Product Details <span className="text-gray-400 font-normal text-sm">(SPF, ingredients…)</span></h2>
+            <button type="button" onClick={addExtraField} className="flex items-center gap-1.5 text-yellow-600 hover:text-yellow-700 text-sm">
               <Plus size={15} /> Add field
             </button>
           </div>
-          {form.extra_data.length === 0 && <p className="text-gray-600 text-sm">No extra fields.</p>}
+          {form.extra_data.length === 0 && <p className="text-gray-400 text-sm">No extra fields.</p>}
           <div className="space-y-3">
             {form.extra_data.map((field, i) => (
               <div key={i} className="flex gap-3 items-center">
                 <input value={field.key} onChange={(e) => updateExtra(i, 'key', e.target.value)}
-                  placeholder="Field name" className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-yellow-500" />
+                  placeholder="Field name" className={`flex-1 ${variantInputCls}`} />
                 <input value={field.value} onChange={(e) => updateExtra(i, 'value', e.target.value)}
-                  placeholder="Value" className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-yellow-500" />
-                <button type="button" onClick={() => removeExtra(i)} className="text-gray-600 hover:text-red-400 transition-colors">
+                  placeholder="Value" className={`flex-1 ${variantInputCls}`} />
+                <button type="button" onClick={() => removeExtra(i)} className="text-gray-400 hover:text-red-500 transition-colors">
                   <X size={16} />
                 </button>
               </div>
@@ -317,11 +387,11 @@ export default function EditProductPage() {
               : 'Save Changes'}
           </button>
           <button type="button" onClick={() => router.back()} disabled={submitting || deleting}
-            className="px-6 py-4 border border-gray-700 rounded-xl text-gray-400 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-60">
+            className="px-6 py-4 border border-gray-200 rounded-xl text-gray-500 hover:border-gray-400 hover:text-gray-700 transition-colors disabled:opacity-60">
             Cancel
           </button>
           <button type="button" onClick={handleDelete} disabled={submitting || deleting}
-            className="px-6 py-4 border border-red-900 rounded-xl text-red-500 hover:border-red-500 hover:text-red-400 transition-colors flex items-center gap-2 disabled:opacity-60">
+            className="px-6 py-4 border border-red-200 rounded-xl text-red-400 hover:border-red-400 hover:text-red-600 transition-colors flex items-center gap-2 disabled:opacity-60">
             <Trash2 size={16} /> {deleting ? 'Deleting…' : 'Delete'}
           </button>
         </div>

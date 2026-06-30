@@ -47,22 +47,22 @@ export default function QuickViewModal({ product, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
       <div
-        className="relative bg-gray-950 border border-gray-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="relative bg-white border border-gray-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-8 h-8 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+          className="absolute top-4 right-4 z-10 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors text-gray-600"
         >
           <X size={16} />
         </button>
 
         <div className="grid sm:grid-cols-2 gap-0">
           {/* Image */}
-          <div className="bg-gray-900 rounded-tl-2xl rounded-bl-2xl overflow-hidden h-64 sm:h-full flex items-center justify-center">
+          <div className="bg-gray-50 rounded-tl-2xl rounded-bl-2xl overflow-hidden h-64 sm:h-full flex items-center justify-center">
             {product.images?.[0] ? (
               <img
                 src={getImageUrl(product.images[0])}
@@ -77,19 +77,19 @@ export default function QuickViewModal({ product, onClose }) {
 
           {/* Details */}
           <div className="p-6 flex flex-col">
-            <p className="text-yellow-400 text-xs uppercase tracking-widest mb-1">{product.brand}</p>
-            <h2 className="text-white font-bold text-lg leading-tight mb-3">{product.name}</h2>
+            <p className="text-yellow-600 text-xs uppercase tracking-widest mb-1 font-semibold">{product.brand}</p>
+            <h2 className="text-gray-900 font-bold text-lg leading-tight mb-3">{product.name}</h2>
 
-            <p className="text-yellow-400 text-2xl font-bold mb-4">{formatPrice(displayPrice)}</p>
+            <p className="text-yellow-600 text-2xl font-bold mb-4">{formatPrice(displayPrice)}</p>
 
             {product.description && (
-              <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">{product.description}</p>
+              <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">{product.description}</p>
             )}
 
             {/* Size selector */}
             {hasVariants && (
               <div className="mb-4">
-                <p className="text-xs text-gray-400 mb-2">Size: <span className="text-white">{selectedVariant?.size}</span></p>
+                <p className="text-xs text-gray-500 mb-2">Size: <span className="text-gray-900 font-semibold">{selectedVariant?.size}</span></p>
                 <div className="flex flex-wrap gap-2">
                   {variants.map((v) => (
                     <button
@@ -98,10 +98,10 @@ export default function QuickViewModal({ product, onClose }) {
                       disabled={v.stock <= 0}
                       className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
                         selectedVariant?.size === v.size
-                          ? 'border-yellow-500 bg-yellow-500/15 text-yellow-400'
+                          ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
                           : v.stock <= 0
-                            ? 'border-gray-800 text-gray-600 cursor-not-allowed line-through'
-                            : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                            ? 'border-gray-200 text-gray-300 cursor-not-allowed line-through'
+                            : 'border-gray-300 text-gray-600 hover:border-gray-400'
                       }`}
                     >
                       {v.size}
@@ -114,12 +114,12 @@ export default function QuickViewModal({ product, onClose }) {
             {/* Qty */}
             {stockQty > 0 && (
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center border border-gray-700 rounded-lg overflow-hidden text-sm">
-                  <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 hover:bg-gray-800">−</button>
-                  <span className="px-3 py-2 text-white">{qty}</span>
-                  <button onClick={() => setQty(Math.min(stockQty, qty + 1))} className="px-3 py-2 hover:bg-gray-800">+</button>
+                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden text-sm bg-gray-50">
+                  <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 hover:bg-gray-100 text-gray-700">−</button>
+                  <span className="px-3 py-2 text-gray-900 font-medium">{qty}</span>
+                  <button onClick={() => setQty(Math.min(stockQty, qty + 1))} className="px-3 py-2 hover:bg-gray-100 text-gray-700">+</button>
                 </div>
-                <span className="text-xs text-gray-500">{stockQty} in stock</span>
+                <span className="text-xs text-gray-400">{stockQty} in stock</span>
               </div>
             )}
 
@@ -135,7 +135,7 @@ export default function QuickViewModal({ product, onClose }) {
               </button>
               <button
                 onClick={() => { toggleItem(product); toast.success(wishlisted ? 'Removed from wishlist' : 'Saved to wishlist'); }}
-                className={`p-2.5 rounded-lg border transition-colors ${wishlisted ? 'border-red-500 bg-red-500/10 text-red-400' : 'border-gray-700 text-gray-400 hover:border-red-500 hover:text-red-400'}`}
+                className={`p-2.5 rounded-lg border transition-colors ${wishlisted ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 text-gray-400 hover:border-red-400 hover:text-red-500'}`}
               >
                 <Heart size={16} className={wishlisted ? 'fill-red-400' : ''} />
               </button>
@@ -144,7 +144,7 @@ export default function QuickViewModal({ product, onClose }) {
             <Link
               href={`/products/${product.slug}`}
               onClick={onClose}
-              className="block text-center text-xs text-gray-500 hover:text-yellow-400 mt-3 transition-colors"
+              className="block text-center text-xs text-gray-400 hover:text-yellow-600 mt-3 transition-colors"
             >
               View full details →
             </Link>
