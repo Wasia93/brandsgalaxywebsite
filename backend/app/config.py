@@ -20,7 +20,14 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> List[str]:
-        return [o.strip() for o in self.ALLOWED_ORIGINS.split(",")]
+        origins = [o.strip() for o in self.ALLOWED_ORIGINS.split(",")]
+        for domain in [
+            "https://www.brandsgalaxy.store",
+            "https://brandsgalaxy.store",
+        ]:
+            if domain not in origins:
+                origins.append(domain)
+        return origins
 
     class Config:
         env_file = ".env"
