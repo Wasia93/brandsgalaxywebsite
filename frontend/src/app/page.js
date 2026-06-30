@@ -80,7 +80,7 @@ function PremiumHero({ products }) {
 
             {/* Stats */}
             <div className="flex gap-4 sm:gap-8 pt-6 border-t border-gray-200">
-              {[['100+','Products'],['6','Brands'],['100%','Authentic']].map(([v,l]) => (
+              {[['150+','Products'],['9+','Brands'],['100%','Authentic']].map(([v,l]) => (
                 <div key={l} className="text-center">
                   <p className="font-heading text-xl sm:text-3xl font-bold text-yellow-600">{v}</p>
                   <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider mt-0.5">{l}</p>
@@ -266,10 +266,10 @@ export default function HomePage() {
             {/* RIGHT — Product image grid */}
             <div className="flex-shrink-0 p-6 lg:p-10 grid grid-cols-2 gap-3 w-full lg:w-[420px]">
               {[
-                { img: 'https://www.theworldofcosmetics.com/cdn/shop/files/anua2_1a199b0d-0b6d-4061-a6c2-14ee7c718ea1.webp', name: 'ANUA Peach 70% Niacinamide Serum', slug: 'anua-peach-70-niacinamide-serum' },
-                { img: 'https://www.theworldofcosmetics.com/cdn/shop/files/TheWorldOfCosmeticsAnuaPDRNHyaluronicAcid100MoisturizingCream8.png', name: 'ANUA PDRN Moisturizing Cream', slug: 'anua-pdrn-hyaluronic-acid-100-moisturizing-cream' },
-                { img: 'https://www.theworldofcosmetics.com/cdn/shop/files/61c5EovDcyL._SX466.jpg', name: 'MEDICUBE Collagen Jelly Cream', slug: 'medicube-collagen-jelly-cream' },
-                { img: 'https://www.theworldofcosmetics.com/cdn/shop/files/MedicubeCollagenGlowBoosterMilkSerumTheWorldOfCosmeticsMainPic.jpg', name: 'MEDICUBE Collagen Glow Serum', slug: 'medicube-collagen-glow-booster-milk-serum' },
+                { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/anua-peach-70-niacinamide-serum-cosmetic-holic-1.webp?v=1740820397', name: 'ANUA Peach 70% Niacinamide Serum', slug: 'anua-peach-70-niacinamide-serum' },
+                { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/anua-pdrn-hyaluronic-acid-100-moisturizing-cream-cosmetic-holic-1.jpg?v=1740820394', name: 'ANUA PDRN Moisturizing Cream', slug: 'anua-pdrn-hyaluronic-acid-100-moisturizing-cream' },
+                { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/medicube-collagen-jelly-cream-cosmetic-holic-1.jpg?v=1740820364', name: 'MEDICUBE Collagen Jelly Cream', slug: 'medicube-collagen-jelly-cream' },
+                { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/medicube-collagen-glow-booster-milk-serum-cosmetic-holic-1.jpg?v=1740820362', name: 'MEDICUBE Collagen Glow Serum', slug: 'medicube-collagen-glow-booster-milk-serum' },
               ].map((p) => (
                 <Link key={p.slug} href={`/products/${p.slug}`}
                   className="relative rounded-2xl overflow-hidden bg-white border border-pink-100 hover:border-pink-300 hover:shadow-md transition-all group h-36 sm:h-44">
@@ -292,7 +292,7 @@ export default function HomePage() {
           <Link href="/products?brand=ANUA"
             className="group relative rounded-2xl overflow-hidden h-48 bg-gradient-to-br from-orange-50 via-white to-white border border-orange-100 hover:border-orange-300 hover:shadow-lg transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(251,146,60,0.08)_0%,_transparent_60%)]" />
-            <img src="https://www.theworldofcosmetics.com/cdn/shop/files/ANUA-Rice70GlowMilkyToner-250ml2.webp"
+            <img src="https://cdn.shopify.com/s/files/1/0733/2285/6745/files/anua-rice-70-glow-milky-toner-250ml-cosmetic-holic-1.webp?v=1740820395"
               alt="ANUA" className="absolute right-0 bottom-0 h-full w-2/5 object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.style.display = 'none'; }} />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-transparent" />
@@ -312,7 +312,7 @@ export default function HomePage() {
           <Link href="/products?brand=MEDICUBE"
             className="group relative rounded-2xl overflow-hidden h-48 bg-gradient-to-br from-purple-50 via-white to-white border border-purple-100 hover:border-purple-300 hover:shadow-lg transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(168,85,247,0.08)_0%,_transparent_60%)]" />
-            <img src="https://www.theworldofcosmetics.com/cdn/shop/files/MedicubeAge-RGlutathioneGlowToner.jpg"
+            <img src="https://cdn.shopify.com/s/files/1/0733/2285/6745/files/medicube-age-r-glutathione-glow-toner-300ml-cosmetic-holic-1.webp?v=1740820367"
               alt="MEDICUBE" className="absolute right-0 bottom-0 h-full w-2/5 object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.style.display = 'none'; }} />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-transparent" />

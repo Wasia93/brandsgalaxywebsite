@@ -72,8 +72,8 @@ export default function ProductCard({ product }) {
               <span className="absolute top-3 left-3 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold z-20">FEATURED</span>
             )}
 
-            {/* Hover action buttons */}
-            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-x-2 sm:group-hover:translate-x-0 transition-all duration-200">
+            {/* Action buttons — always visible on mobile, hover-reveal on desktop */}
+            <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:translate-x-2 sm:group-hover:translate-x-0 transition-all duration-200">
               <button
                 onClick={handleWishlist}
                 className={`w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-colors ${wishlisted ? 'bg-red-500 text-white' : 'bg-white text-gray-600 hover:bg-red-500 hover:text-white'}`}

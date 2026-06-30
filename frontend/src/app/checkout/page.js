@@ -9,9 +9,8 @@ import {
 import { useCartStore, useAuthStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
 import { getImageUrl } from '@/lib/utils';
+import api from '@/lib/api';
 import toast from 'react-hot-toast';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const SHIPPING_KARACHI = 350;
 const SHIPPING_OTHER = 450;
@@ -99,36 +98,25 @@ export default function CheckoutPage() {
         unit_price: Number(item.variantPrice ?? item.discount_price ?? item.price),
       }));
 
-      const res = await fetch(`${API_URL}/api/orders/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      const res = await api.post('/api/orders/', {
+        items: orderItems,
+        shipping_address: {
+          full_name: form.full_name.trim(),
+          phone: form.phone.trim(),
+          address: form.address.trim(),
+          city: cityName,
         },
-        body: JSON.stringify({
-          items: orderItems,
-          shipping_address: {
-            full_name: form.full_name.trim(),
-            phone: form.phone.trim(),
-            address: form.address.trim(),
-            city: cityName,
-          },
-          payment_method: form.payment_method,
-          customer_notes: form.notes.trim() || null,
-        }),
+        payment_method: form.payment_method,
+        customer_notes: form.notes.trim() || null,
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || 'Could not place order. Please try again.');
-      }
-
-      const data = await res.json();
+      const data = res.data;
       clearCart();
       setOrderPlaced({ ...data, paymentMethod: form.payment_method });
       window.scrollTo(0, 0);
     } catch (err) {
-      toast.error(err.message);
+      const msg = err?.response?.data?.detail || err?.message || 'Could not place order. Please try again.';
+      toast.error(typeof msg === 'string' ? msg : 'Could not place order. Please try again.');
     } finally {
       setLoading(false);
     }

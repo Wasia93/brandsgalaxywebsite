@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import { authAPI, getErrorMessage } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
@@ -9,8 +9,10 @@ import toast from 'react-hot-toast';
 
 const inputCls = "w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-colors";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get('next') || '/';
   const setAuth = useAuthStore((s) => s.setAuth);
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
@@ -23,7 +25,7 @@ export default function LoginPage() {
       const res = await authAPI.login(form.email, form.password);
       setAuth(res.data.user, res.data.access_token);
       toast.success(`Welcome back, ${res.data.user.full_name.split(' ')[0]}!`);
-      router.push('/');
+      router.push(nextPath);
     } catch (err) {
       toast.error(getErrorMessage(err, 'Login failed. Please check your credentials.'));
     } finally {
@@ -71,5 +73,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[80vh]" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

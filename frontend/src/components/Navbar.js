@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, User, LogOut, Menu, X, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useCartStore, useAuthStore, useWishlistStore } from '@/lib/store';
+import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
@@ -29,12 +30,12 @@ export default function Navbar() {
         {/* Logo + Brand Name */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
           <img
-            src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/static/products/f7d0690b740a4d8a8f0444de8bffe6a2.jpeg`}
+            src={getImageUrl('/static/products/f7d0690b740a4d8a8f0444de8bffe6a2.jpeg')}
             alt="Brands Galaxy"
             className="h-20 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
-          <div className="hidden xs:flex flex-col leading-tight">
+          <div className="flex flex-col leading-tight">
             <span className="text-yellow-600 font-bold tracking-widest text-base sm:text-lg uppercase">Brands</span>
             <span className="text-yellow-600 font-bold tracking-widest text-base sm:text-lg uppercase">Galaxy</span>
           </div>
@@ -110,10 +111,23 @@ export default function Navbar() {
           <Link href="/products?category=skincare" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium">Skincare</Link>
           <Link href="/products?category=makeup" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium">Makeup</Link>
           <Link href="/products?category=korean-beauty" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-pink-500 transition-colors font-medium flex items-center gap-2">🌸 K-Beauty</Link>
-          {token ? (
-            <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="py-3.5 text-left text-red-500 font-medium">
-              Logout
-            </button>
+          <Link href="/wishlist" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-red-500 transition-colors font-medium flex items-center gap-2">
+            <Heart size={16} /> Wishlist {mounted && wishlistCount > 0 && <span className="bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{wishlistCount}</span>}
+          </Link>
+          <Link href="/cart" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium flex items-center gap-2">
+            <ShoppingCart size={16} /> Cart {mounted && itemCount > 0 && <span className="bg-yellow-500 text-black text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{itemCount}</span>}
+          </Link>
+          {mounted && token ? (
+            <>
+              {user?.is_admin && (
+                <Link href="/admin" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 text-yellow-700 font-semibold flex items-center gap-2">
+                  ⚙️ Admin Dashboard
+                </Link>
+              )}
+              <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="py-3.5 text-left text-red-500 font-medium">
+                Logout ({user?.full_name?.split(' ')[0]})
+              </button>
+            </>
           ) : (
             <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="py-3.5 hover:text-yellow-600 transition-colors font-medium">Login / Register</Link>
           )}

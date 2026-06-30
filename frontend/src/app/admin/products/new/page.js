@@ -121,7 +121,7 @@ export default function AddProductPage() {
       await api.post('/api/products/', payload);
       setSuccess(true);
       toast.success('Product added successfully!');
-      setTimeout(() => router.push('/products'), 2000);
+      setTimeout(() => router.push('/admin'), 2000);
     } catch (err) {
       toast.error(getErrorMessage(err, 'Failed to add product'));
     } finally {
