@@ -1,6 +1,7 @@
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
+import KeepAlive from '@/components/KeepAlive';
 
 export const metadata = {
   title: 'Brands Galaxy — Luxury Cosmetics & Skincare',
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-gray-900">
+        <KeepAlive />
         <Navbar />
 
         {/* Trust Badges Bar */}
