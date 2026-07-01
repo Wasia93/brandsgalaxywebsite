@@ -52,7 +52,7 @@ function ProductsContent() {
     if (filters.in_stock) params.in_stock = true;
     params.sort_by = filters.sort_by;
     params.sort_order = filters.sort_order;
-    params.limit = 100;
+    params.limit = 200;
 
     productsAPI.getAll(params)
       .then((res) => { setProducts(res.data); setFetchError(false); setLoading(false); })

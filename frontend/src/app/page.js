@@ -80,7 +80,7 @@ function PremiumHero({ products }) {
 
             {/* Stats */}
             <div className="flex gap-4 sm:gap-8 pt-6 border-t border-gray-200">
-              {[['150+','Products'],['9+','Brands'],['100%','Authentic']].map(([v,l]) => (
+              {[['160+','Products'],['12+','Brands'],['100%','Authentic']].map(([v,l]) => (
                 <div key={l} className="text-center">
                   <p className="font-heading text-xl sm:text-3xl font-bold text-yellow-600">{v}</p>
                   <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider mt-0.5">{l}</p>

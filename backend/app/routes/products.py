@@ -14,7 +14,7 @@ router = APIRouter()
 @router.get("/", response_model=List[ProductResponse])
 async def get_products(
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
+    limit: int = Query(20, ge=1, le=500),
     category: Optional[str] = None,
     brand: Optional[str] = None,
     search: Optional[str] = None,
