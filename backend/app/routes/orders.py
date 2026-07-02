@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-import uuid, random, string
+import uuid, random, string, threading, urllib.request, urllib.parse, os
 
 from app.database import get_db
 from app.models.order import Order, OrderItem, OrderStatus
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, get_current_admin_user
 
 router = APIRouter()
 
@@ -42,9 +42,37 @@ class OrderCreate(BaseModel):
     customer_notes: Optional[str] = None
 
 
+class StatusUpdate(BaseModel):
+    status: str
+
+
 def _generate_order_number() -> str:
     suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     return f"BG-{datetime.utcnow().strftime('%Y%m%d')}-{suffix}"
+
+
+def _whatsapp_notify(order_number, full_name, phone, items_text, total, city, payment_method):
+    """Send WhatsApp notification via CallMeBot (fire-and-forget, runs in background thread)."""
+    api_key = os.getenv("CALLMEBOT_API_KEY", "")
+    if not api_key:
+        return
+    msg = (
+        f"New Order: {order_number}\n"
+        f"Customer: {full_name} | {phone}\n"
+        f"Items: {items_text}\n"
+        f"Total: Rs. {total:,.0f}\n"
+        f"City: {city} | {payment_method.upper()}"
+    )
+    url = (
+        f"https://api.callmebot.com/whatsapp.php"
+        f"?phone=923413157159"
+        f"&text={urllib.parse.quote(msg)}"
+        f"&apikey={api_key}"
+    )
+    try:
+        urllib.request.urlopen(url, timeout=10)
+    except Exception:
+        pass
 
 
 # --- Routes ---
@@ -111,6 +139,22 @@ def create_order(
     db.commit()
     db.refresh(order)
 
+    # Fire WhatsApp notification in background — doesn't delay response
+    items_text = ", ".join(f"{i.product_name} x{i.quantity}" for i in payload.items)
+    threading.Thread(
+        target=_whatsapp_notify,
+        args=(
+            order.order_number,
+            payload.shipping_address.full_name,
+            payload.shipping_address.phone,
+            items_text,
+            float(order.total_amount),
+            payload.shipping_address.city,
+            payload.payment_method,
+        ),
+        daemon=True,
+    ).start()
+
     return {
         "order_number": order.order_number,
         "subtotal": float(order.subtotal),
@@ -120,6 +164,71 @@ def create_order(
         "status": order.status,
         "payment_method": order.payment_method,
     }
+
+
+@router.get("/admin")
+def get_all_orders_admin(
+    status: Optional[str] = None,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=200),
+    db: Session = Depends(get_db),
+    _=Depends(get_current_admin_user),
+):
+    """Admin: get all orders with full details."""
+    query = db.query(Order).order_by(Order.created_at.desc())
+    if status:
+        query = query.filter(Order.status == status)
+    total_count = query.count()
+    orders = query.offset(skip).limit(limit).all()
+
+    return {
+        "total": total_count,
+        "orders": [
+            {
+                "id": o.id,
+                "order_number": o.order_number,
+                "status": o.status,
+                "subtotal": float(o.subtotal),
+                "shipping": float(o.shipping),
+                "tax": float(o.tax),
+                "total": float(o.total_amount),
+                "payment_method": o.payment_method,
+                "shipping_address": o.shipping_address,
+                "customer_notes": o.customer_notes,
+                "created_at": o.created_at.isoformat(),
+                "items": [
+                    {
+                        "product_name": i.product_name,
+                        "product_brand": i.product_brand,
+                        "quantity": i.quantity,
+                        "unit_price": float(i.unit_price),
+                        "total_price": float(i.total_price),
+                    }
+                    for i in o.items
+                ],
+            }
+            for o in orders
+        ],
+    }
+
+
+@router.patch("/{order_id}/status")
+def update_order_status(
+    order_id: str,
+    payload: StatusUpdate,
+    db: Session = Depends(get_db),
+    _=Depends(get_current_admin_user),
+):
+    """Admin: update order status."""
+    valid = {"pending", "paid", "processing", "shipped", "delivered", "cancelled", "refunded"}
+    if payload.status not in valid:
+        raise HTTPException(status_code=400, detail=f"Invalid status. Use: {', '.join(valid)}")
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    order.status = payload.status
+    db.commit()
+    return {"success": True, "order_id": order_id, "status": payload.status}
 
 
 @router.get("/my-orders")

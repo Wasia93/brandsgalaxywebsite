@@ -1,18 +1,45 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
-import { useCartStore } from '@/lib/store';
-import { formatPrice, FREE_SHIPPING_THRESHOLD, SHIPPING_KARACHI } from '@/lib/currency';
+import { useCartStore, useAuthStore } from '@/lib/store';
+import { formatPrice, FREE_SHIPPING_THRESHOLD } from '@/lib/currency';
 import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react';
 
 export default function CartPage() {
+  const router = useRouter();
+  const { token } = useAuthStore();
   const { items, removeItem, updateQuantity, clearCart, getSubtotal, getTax, getShipping, getGrandTotal } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const subtotal = getSubtotal();
   const tax = getTax();
   const shipping = getShipping();
   const total = getGrandTotal();
+
+  const handleDecrement = (item) => {
+    if (item.quantity === 1) {
+      if (window.confirm(`Remove "${item.name}" from cart?`)) {
+        removeItem(item.cartKey);
+        toast.success('Item removed');
+      }
+    } else {
+      updateQuantity(item.cartKey, item.quantity - 1);
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!token) {
+      toast.error('Please sign in to checkout');
+      router.push('/auth/login?next=/checkout');
+      return;
+    }
+    router.push('/checkout');
+  };
 
   if (items.length === 0) {
     return (
@@ -44,7 +71,6 @@ export default function CartPage() {
             const imageSrc = item.images?.[0];
             return (
               <div key={item.cartKey} className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 flex gap-3 sm:gap-4 shadow-sm">
-                {/* Image */}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-100">
                   {imageSrc ? (
                     <img src={getImageUrl(imageSrc)} alt={item.name} className="w-full h-full object-cover" onError={(e) => { e.target.style.display='none'; }} />
@@ -53,7 +79,6 @@ export default function CartPage() {
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-yellow-600 mb-0.5 font-semibold">{item.brand}</p>
                   <Link href={`/products/${item.slug}`} className="text-gray-900 font-medium text-sm hover:text-yellow-600 line-clamp-2">
@@ -67,13 +92,12 @@ export default function CartPage() {
                   <p className="text-yellow-600 font-semibold mt-1">{formatPrice(itemPrice)}</p>
                 </div>
 
-                {/* Qty controls */}
                 <div className="flex flex-col items-end justify-between">
                   <button onClick={() => { removeItem(item.cartKey); toast.success('Item removed'); }} className="text-gray-300 hover:text-red-500 transition-colors">
                     <Trash2 size={16} />
                   </button>
                   <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden text-sm bg-gray-50">
-                    <button onClick={() => updateQuantity(item.cartKey, item.quantity - 1)} className="px-3 py-2 hover:bg-gray-100 min-w-[40px] text-gray-700">−</button>
+                    <button onClick={() => handleDecrement(item)} className="px-3 py-2 hover:bg-gray-100 min-w-[40px] text-gray-700">−</button>
                     <span className="px-3 py-2 text-gray-900 font-medium">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.cartKey, item.quantity + 1)} className="px-3 py-2 hover:bg-gray-100 min-w-[40px] text-gray-700">+</button>
                   </div>
@@ -108,9 +132,17 @@ export default function CartPage() {
               <span className="text-yellow-600">{formatPrice(total)}</span>
             </div>
           </div>
-          <Link href="/checkout" className="btn-gold w-full py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
+
+          {/* Guest hint */}
+          {mounted && !token && (
+            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3 text-center">
+              You'll need to sign in to complete your purchase
+            </p>
+          )}
+
+          <button onClick={handleCheckout} className="btn-gold w-full py-3 rounded-lg font-semibold flex items-center justify-center gap-2">
             Proceed to Checkout <ArrowRight size={18} />
-          </Link>
+          </button>
           <Link href="/products" className="block text-center text-gray-400 text-sm mt-4 hover:text-gray-700 transition-colors">
             Continue Shopping
           </Link>

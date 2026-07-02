@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, User, LogOut, Menu, X, Heart } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Heart, Package } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useCartStore, useAuthStore, useWishlistStore } from '@/lib/store';
 import { getImageUrl } from '@/lib/utils';
@@ -82,6 +82,9 @@ export default function Navbar() {
                   Admin
                 </Link>
               )}
+              <Link href="/orders" className="p-2 text-gray-500 hover:text-yellow-600 transition-colors" title="My Orders">
+                <Package size={18} />
+              </Link>
               <span className="text-sm text-gray-500 max-w-[80px] truncate">
                 {user?.full_name?.split(' ')[0]}
               </span>
@@ -119,6 +122,9 @@ export default function Navbar() {
           </Link>
           {mounted && token ? (
             <>
+              <Link href="/orders" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 hover:text-yellow-600 transition-colors font-medium flex items-center gap-2">
+                <Package size={16} /> My Orders
+              </Link>
               {user?.is_admin && (
                 <Link href="/admin" onClick={() => setMenuOpen(false)} className="py-3.5 border-b border-gray-100 text-yellow-700 font-semibold flex items-center gap-2">
                   ⚙️ Admin Dashboard

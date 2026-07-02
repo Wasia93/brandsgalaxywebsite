@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Package, PlusCircle, ShoppingBag, BarChart2, ArrowRight, Pencil, Trash2 } from 'lucide-react';
+import { Package, PlusCircle, ShoppingBag, BarChart2, ArrowRight, Pencil, Trash2, ClipboardList } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { productsAPI } from '@/lib/api';
 import api from '@/lib/api';
@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, token } = useAuthStore();
-  const [stats, setStats] = useState({ products: 0, categories: 0, brands: 0 });
+  const [stats, setStats] = useState({ products: 0, categories: 0, brands: 0, orders: 0 });
   const [products, setProducts] = useState([]);
   const [deletingId, setDeletingId] = useState(null);
 
@@ -23,8 +23,10 @@ export default function AdminDashboard() {
       productsAPI.getCategories(),
       productsAPI.getBrands(),
       productsAPI.getAll({ limit: 100 }),
-    ]).then(([cats, brands, prods]) => {
-      setStats({ categories: cats.data.length, brands: brands.data.length, products: prods.data.length });
+      api.get('/api/orders/admin', { params: { limit: 1 } }),
+    ]).then(([cats, brands, prods, orders]) => {
+      const orderTotal = orders.data?.total ?? 0;
+      setStats({ categories: cats.data.length, brands: brands.data.length, products: prods.data.length, orders: orderTotal });
       setProducts(prods.data);
     }).catch(() => {});
   }, [token, user, router]);
@@ -55,9 +57,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
         {[
           { icon: <Package size={24} />, label: 'Products', value: stats.products, color: 'text-yellow-500' },
+          { icon: <ClipboardList size={24} />, label: 'Orders', value: stats.orders, color: 'text-purple-500' },
           { icon: <ShoppingBag size={24} />, label: 'Categories', value: stats.categories, color: 'text-blue-500' },
           { icon: <BarChart2 size={24} />, label: 'Brands', value: stats.brands, color: 'text-green-500' },
         ].map((s) => (
@@ -71,7 +74,7 @@ export default function AdminDashboard() {
 
       {/* Quick actions */}
       <h2 className="font-heading text-xl font-bold mb-4 text-gray-900">Quick Actions</h2>
-      <div className="grid md:grid-cols-2 gap-4 mb-10">
+      <div className="grid md:grid-cols-3 gap-4 mb-10">
         <Link href="/admin/products/new"
           className="group bg-white border border-gray-200 hover:border-yellow-400 rounded-xl p-6 flex items-center justify-between transition-all shadow-sm">
           <div className="flex items-center gap-4">
@@ -84,6 +87,20 @@ export default function AdminDashboard() {
             </div>
           </div>
           <ArrowRight size={18} className="text-gray-300 group-hover:text-yellow-500 transition-colors" />
+        </Link>
+
+        <Link href="/admin/orders"
+          className="group bg-white border border-gray-200 hover:border-purple-400 rounded-xl p-6 flex items-center justify-between transition-all shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+              <ClipboardList size={24} className="text-purple-500" />
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900">Manage Orders</p>
+              <p className="text-gray-500 text-sm">View, update & track all orders</p>
+            </div>
+          </div>
+          <ArrowRight size={18} className="text-gray-300 group-hover:text-purple-400 transition-colors" />
         </Link>
 
         <Link href="/products"

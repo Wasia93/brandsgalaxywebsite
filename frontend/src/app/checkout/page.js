@@ -53,7 +53,18 @@ export default function CheckoutPage() {
     if (user?.full_name) setForm(f => ({ ...f, full_name: user.full_name }));
   }, [user]);
 
-  if (!mounted) return null;
+  if (!mounted) return (
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="h-6 w-28 bg-gray-100 rounded animate-pulse mb-8" />
+      <div className="grid lg:grid-cols-2 gap-8">
+        <div className="space-y-4">
+          <div className="bg-gray-100 rounded-xl h-72 animate-pulse" />
+          <div className="bg-gray-100 rounded-xl h-48 animate-pulse" />
+        </div>
+        <div className="bg-gray-100 rounded-xl h-96 animate-pulse" />
+      </div>
+    </div>
+  );
 
   if (!token) {
     router.push('/auth/login?next=/checkout');
@@ -84,6 +95,7 @@ export default function CheckoutPage() {
     if (!form.full_name.trim()) { toast.error('Full name is required'); return; }
     if (!form.phone.trim())     { toast.error('Phone number is required'); return; }
     if (!form.address.trim())   { toast.error('Delivery address is required'); return; }
+    if (form.city_type === 'other' && !form.city_name.trim()) { toast.error('Please enter your city name'); return; }
 
     setLoading(true);
     try {
@@ -463,12 +475,12 @@ function OrderSuccess({ order }) {
         </div>
       )}
 
-      <div className="flex gap-3 justify-center">
-        <Link href="/products" className="btn-gold px-6 py-2.5 rounded-lg font-semibold text-sm">
-          Continue Shopping
+      <div className="flex gap-3 justify-center flex-wrap">
+        <Link href="/orders" className="btn-gold px-6 py-2.5 rounded-lg font-semibold text-sm">
+          View My Orders
         </Link>
-        <Link href="/" className="px-6 py-2.5 rounded-lg font-semibold text-sm border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors">
-          Go Home
+        <Link href="/products" className="px-6 py-2.5 rounded-lg font-semibold text-sm border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors">
+          Continue Shopping
         </Link>
       </div>
     </div>

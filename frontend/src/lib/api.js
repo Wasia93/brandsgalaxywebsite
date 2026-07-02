@@ -33,7 +33,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// On 401 → clear stale session and redirect to login
+// On 401 → clear stale session and redirect to login, preserving ?next= so the user returns
 api.interceptors.response.use(
   (res) => res,
   (error) => {
@@ -41,7 +41,8 @@ api.interceptors.response.use(
       try {
         localStorage.removeItem('auth-storage');
       } catch (_) {}
-      window.location.href = '/auth/login';
+      const next = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href = `/auth/login?next=${next}`;
     }
     return Promise.reject(error);
   }
