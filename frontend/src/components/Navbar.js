@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, User, LogOut, Menu, X, Heart, Package } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useCartStore, useAuthStore, useWishlistStore } from '@/lib/store';
-import { getImageUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
@@ -30,7 +29,7 @@ export default function Navbar() {
         {/* Logo + Brand Name */}
         <Link href="/" className="flex items-center gap-3 flex-shrink-0">
           <img
-            src={getImageUrl('/static/products/f7d0690b740a4d8a8f0444de8bffe6a2.jpeg')}
+            src="/logo.png"
             alt="Brands Galaxy"
             className="h-20 w-auto object-contain"
             onError={(e) => { e.target.style.display = 'none'; }}
