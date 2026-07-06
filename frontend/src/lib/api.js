@@ -1,17 +1,19 @@
 import axios from 'axios';
 import { useAuthStore } from './store';
 
-// In production, always target the canonical www domain explicitly rather than
-// a relative URL. The bare domain (brandsgalaxy.store) 308-redirects to
-// www.brandsgalaxy.store for every path including /api/*, and browsers drop the
-// Authorization header on redirects that cross an origin boundary — so a
-// relative-URL call made while the page is on the bare domain silently loses
-// its auth header and gets rejected as unauthenticated. Hitting www directly
-// sidesteps that redirect entirely.
-// In local dev NEXT_PUBLIC_API_URL points at localhost:8000 directly.
+// Call the Render backend directly rather than going through the Next.js
+// rewrite proxy. Verified against the live deployment: requests to
+// /api/* through the Vercel rewrite come back as a same-origin 308
+// (trailing-slash normalization) followed by a cross-origin 307 straight
+// to the onrender.com URL — i.e. the "rewrite" is actually a visible
+// redirect chain, not a transparent proxy, and browsers drop the
+// Authorization header on that final cross-origin hop. Calling Render
+// directly avoids the redirect chain entirely; CORS on the backend
+// already allows both brandsgalaxy.store and www.brandsgalaxy.store with
+// credentials, so this works with no header loss.
 const API_BASE_URL =
   typeof window !== 'undefined' && process.env.NODE_ENV === 'production'
-    ? 'https://www.brandsgalaxy.store'
+    ? 'https://brandsgalaxywebsite.onrender.com'
     : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
