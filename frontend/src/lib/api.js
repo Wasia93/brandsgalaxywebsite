@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from './store';
 
 // In a browser on the production site use relative URLs so the Next.js
 // rewrite proxy handles the request (avoids CORS entirely).
@@ -13,22 +14,20 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach token from localStorage on every request
+// Attach token from the live auth store on every request — reading the
+// hydrated Zustand state directly (instead of re-parsing localStorage here)
+// avoids silently dropping the header if the raw storage read/parse ever
+// fails (seen on some in-app WebViews with restricted localStorage).
 api.interceptors.request.use((config) => {
   // Let browser set Content-Type automatically for FormData (multipart + boundary)
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'];
   }
   if (typeof window !== 'undefined') {
-    try {
-      const raw = localStorage.getItem('auth-storage');
-      if (raw) {
-        const { state } = JSON.parse(raw);
-        if (state?.token) {
-          config.headers.Authorization = `Bearer ${state.token}`;
-        }
-      }
-    } catch (_) {}
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });

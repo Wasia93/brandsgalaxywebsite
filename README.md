@@ -1,225 +1,114 @@
-# 🌟 Brands Galaxy - VS Code Ready Project
+# Brands Galaxy
 
-**Premium E-commerce for Luxury Cosmetics & Skincare**
+Live e-commerce site for a Pakistan-based luxury cosmetics, skincare, and K-beauty retailer — **brandsgalaxy.store**.
 
-## 🎯 Quick Start (2 Minutes!)
+This file is the source of truth for orienting in this codebase. It reflects the **current, deployed state** of the project, not the original scaffold. If anything here looks stale, prefer `git log` / the actual code over this doc, then fix this doc.
 
-### Step 1: Open in VS Code
-1. **Extract** this folder
-2. **Double-click** on `brands-galaxy.code-workspace` file
-   - OR
-3. **Open VS Code** → File → Open Workspace from File → Select `brands-galaxy.code-workspace`
+## Architecture
 
-### Step 2: Install Dependencies
+Decoupled two-service app:
 
-**Backend:**
-- Press `Ctrl+Shift+P` (Command Palette)
-- Type: `Tasks: Run Task`
-- Select: `🔧 Install Backend Dependencies`
-- Wait for installation to complete
+| Layer | Tech | Hosted on |
+|---|---|---|
+| Frontend | Next.js 14 (App Router, JavaScript, no TS) + React 18 + Tailwind + Zustand | Vercel |
+| Backend | FastAPI (Python 3.11) + SQLAlchemy 2.0 + Alembic | Render |
+| Database | PostgreSQL | Supabase |
+| File storage | Supabase Storage (falls back to local `backend/app/static/products/` in dev) | Supabase |
 
-**Frontend:**
-- Press `Ctrl+Shift+P`
-- Type: `Tasks: Run Task`
-- Select: `📦 Install Frontend Dependencies`
-- Wait for npm install to complete
+**Why routing works the way it does:** in production, Next.js rewrites (`frontend/next.config.js`) proxy `/api/*` and `/static/*` straight through to the Render backend. The browser only ever talks to the Vercel domain — this sidesteps CORS entirely, which is why several past commits mention CORS fixes (those were from before the proxy was in place).
 
-### Step 3: Start Servers
+Render's free tier sleeps the backend when idle, so:
+- `frontend/src/components/KeepAlive.js` pings the backend to delay cold sleep.
+- `frontend/src/app/products/page.js` auto-retries product fetches to ride out a cold start instead of showing "0 results".
 
-**Option A - Start Both Together:**
-- Press `Ctrl+Shift+P`
-- Type: `Tasks: Run Task`
-- Select: `🎉 Start Both Servers`
-- Both backend and frontend will start!
-
-**Option B - Start Separately:**
-
-Backend:
-- Press `Ctrl+Shift+P`
-- Select: `🚀 Start Backend (FastAPI)`
-
-Frontend:
-- Press `Ctrl+Shift+P`
-- Select: `🎯 Start Frontend (Next.js)`
-
-### Step 4: Open in Browser
-- **Backend API:** http://localhost:8000
-- **API Docs:** http://localhost:8000/docs
-- **Frontend:** http://localhost:3000
-
----
-
-## ✅ What's Included:
-
-### Backend (FastAPI) - Complete! ✅
-- User authentication (JWT)
-- Product management (CRUD)
-- 12 sample products from:
-  - MAC (2 products)
-  - CeraVe (3 products)
-  - L'Oréal (2 products)
-  - Aveeno (2 products)
-  - Cetaphil (3 products)
-- Advanced filtering & search
-- Admin endpoints
-- SQLite database (auto-creates)
-
-### Frontend (Next.js) - Structure Ready ✅
-- Gold & Black luxury theme
-- Cart state management (Zustand)
-- Auth state management
-- Tailwind CSS configured
-- Ready for components
-
-### AI Agents ✅
-- 5 Expert Agents (3,486 lines of code!)
-- Product Catalog Agent
-- Checkout Agent
-- Backend API Agent
-- UI Component Agent
-- Admin Panel Agent
-
----
-
-## 📁 Folder Structure
+## Repo layout
 
 ```
 brands-galaxy-vscode/
-│
-├── brands-galaxy.code-workspace    👈 OPEN THIS IN VS CODE!
-│
-├── backend/                        ✅ Complete FastAPI Backend
+├── backend/                     FastAPI app
 │   ├── app/
-│   │   ├── main.py                ✅ Server entry point
-│   │   ├── config.py              ✅ Settings
-│   │   ├── database.py            ✅ Database connection
-│   │   ├── models/                ✅ SQLAlchemy models
-│   │   │   ├── user.py
-│   │   │   ├── product.py
-│   │   │   └── order.py
-│   │   ├── schemas/               ✅ Pydantic validation
-│   │   ├── routes/                ✅ API endpoints
-│   │   └── utils/                 ✅ Auth + Seed data
-│   ├── .env                       ✅ Configuration
-│   └── requirements.txt           ✅ Dependencies
+│   │   ├── main.py              App factory, CORS, static mount, DB init + seed on startup (lifespan)
+│   │   ├── config.py            Pydantic settings (env vars)
+│   │   ├── database.py          SQLAlchemy engine/session (auto-adds sslmode=require for Postgres)
+│   │   ├── models/               user.py, product.py (Category + Product), order.py (Order/OrderItem/enums)
+│   │   ├── schemas/               Pydantic request/response models
+│   │   ├── routes/
+│   │   │   ├── auth.py           /api/auth — register, login (JWT), me
+│   │   │   ├── products.py       /api/products — list/filter/sort/paginate, categories, brands, admin CRUD, image upload
+│   │   │   └── orders.py         /api/orders — checkout pricing (Pakistan-specific), admin order management, WhatsApp notify
+│   │   ├── utils/                 auth.py (bcrypt/JWT), storage.py (Supabase or local upload), seed.py, seed_korean.py
+│   │   └── static/products/       Local fallback image storage
+│   ├── migrations/                Alembic (currently just 001_initial_schema.py — most schema changes went via create_all, not migrations)
+│   ├── seed_kbeauty.py            Standalone script to seed/expand the Korean-beauty catalog — run manually
+│   ├── requirements.txt, alembic.ini, Procfile, runtime.txt (pins Python 3.11.9), .env / .env.example
 │
-├── frontend/                       ✅ Next.js Frontend
+├── frontend/                    Next.js app
 │   ├── src/
-│   │   ├── app/                   📝 Pages (to be created)
-│   │   ├── components/            📝 Components
+│   │   ├── app/                  File-based routes: / , /products , /products/[slug] , /cart , /checkout ,
+│   │   │                         /orders , /wishlist , /auth/login , /auth/register , /admin , /admin/orders ,
+│   │   │                         /admin/products/new , /admin/products/edit/[id] , robots.ts , sitemap.ts
+│   │   ├── components/           Navbar.js, ProductCard.js, QuickViewModal.js, KeepAlive.js
 │   │   └── lib/
-│   │       └── store.js           ✅ Cart + Auth store
-│   ├── public/
-│   ├── package.json               ✅ Dependencies
-│   ├── tailwind.config.js         ✅ Luxury theme
-│   └── .env.local                 ✅ API URL
+│   │       ├── store.js          Zustand stores (persisted to localStorage): useCartStore, useWishlistStore, useAuthStore
+│   │       ├── api.js             Axios instance; relative URLs in prod (proxy), JWT auto-attach, 401 → auto-logout
+│   │       ├── currency.js        PKR formatting + shipping/tax constants (see "duplicated logic" below)
+│   │       └── utils.js           getImageUrl() and misc helpers
+│   ├── package.json, tailwind.config.js, next.config.js, vercel.json, .env.local
 │
-├── .claude/                        ✅ AI Agents
-│   └── agents/                    ✅ 5 expert agents
-│
-└── .vscode/                        ✅ VS Code Config
-    └── tasks.json                 ✅ One-click tasks
+├── public/                      Marketing/product images referenced directly by the frontend
+├── .claude/agents/               Domain-spec playbooks for AI agents (not runtime code)
+├── .vscode/                      VS Code tasks (install/run backend & frontend)
+├── brands-galaxy.code-workspace  Multi-root workspace (root/backend/frontend)
+└── vercel.json                  Empty — lets Vercel auto-detect the frontend/ Next.js app
 ```
 
----
+## Business logic worth knowing
 
-## 🎮 VS Code Tasks (Keyboard Shortcuts)
+- **Checkout**: Cash on Delivery or bank transfer only — no payment gateway is wired up (a Stripe publishable-key placeholder sits unused in `frontend/.env.local`).
+- **Pricing rules (Pakistan-specific)**: Karachi vs. other-city shipping rates, 4% tax, free shipping over Rs. 5000. This logic is **duplicated in three places** — `backend/app/routes/orders.py`, `frontend/src/lib/store.js`, and `frontend/src/app/checkout/page.js` — keep them in sync when changing rates.
+- **Order notifications**: creating an order fires a WhatsApp message via the CallMeBot API on a background thread (non-blocking), gated by the `CALLMEBOT_API_KEY` env var.
+- **Products**: soft-delete only (`is_active=False`). List endpoint limit ceiling is 500 to accommodate the full catalog (~164 active products across 12+ brands, including Korean brands like ANUA and MEDICUBE).
+- **Auth**: JWT bearer tokens, `is_admin` flag gates `/admin` routes and pages.
 
-Press `Ctrl+Shift+P` and type:
+## Known rough edges
 
-- `🔧 Install Backend Dependencies` - Setup Python virtual env
-- `📦 Install Frontend Dependencies` - Run npm install
-- `🚀 Start Backend (FastAPI)` - Start API server
-- `🎯 Start Frontend (Next.js)` - Start Next.js dev server
-- `🎉 Start Both Servers` - Start everything together!
+- `backend/app/schemas/order.py` defines a fuller US-style address schema (state/postal_code/country) that's **unused** — `routes/orders.py` defines its own simpler inline models matching the actual Pakistan-only checkout form. Don't edit the unused schema expecting it to take effect.
+- A stray literal folder `frontend/src/{app,components,lib}` exists alongside the real `app/`, `components/`, `lib/` directories — a leftover brace-expansion mistake, safe to ignore/delete.
+- `backend/.env` contains real values and isn't obviously covered by `.gitignore` — verify before pushing that live secrets aren't committed.
 
----
+## Environment variables
 
-## 🧪 Test the API
+**`backend/.env`** (see `backend/.env.example`):
+```
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+SECRET_KEY=...
+SUPABASE_URL=https://[PROJECT-REF].supabase.co
+SUPABASE_SERVICE_KEY=...
+SUPABASE_BUCKET=products
+ALLOWED_ORIGINS=http://localhost:3000,https://your-app.vercel.app
+CALLMEBOT_API_KEY=...        # optional — enables WhatsApp order notifications
+```
+Note: `ALLOWED_ORIGINS` handling in `config.py` always force-includes `brandsgalaxy.store`/`www.` regardless of this value.
 
-Once backend is running, test these:
-
-### 1. Health Check
-```bash
-curl http://localhost:8000/health
+**`frontend/.env.local`**:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=...   # placeholder, unused — no Stripe integration exists yet
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
 
-### 2. Get Products
-```bash
-curl http://localhost:8000/api/products
-```
-
-### 3. Filter by Brand
-```bash
-curl "http://localhost:8000/api/products?brand=CeraVe"
-```
-
-### 4. Login as Admin
-```bash
-curl -X POST http://localhost:8000/api/auth/login \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin@brandsgalaxy.com&password=admin123"
-```
-
----
-
-## 📦 Sample Products (Pre-loaded)
-
-**MAC:**
-- Studio Fix Fluid Foundation SPF 15 - $39.00
-- Matte Lipstick Ruby Woo - $26.00
-
-**CeraVe:**
-- Hydrating Facial Cleanser - $16.99
-- Moisturizing Cream - $19.99
-- Daily Moisturizing Lotion - $14.99
-
-**L'Oréal:**
-- Hyaluronic Acid Serum - $24.99 (was $29.99)
-- True Match Foundation - $15.99
-
-**Aveeno:**
-- Daily Moisturizing Lotion - $12.99
-- Radiant Daily Moisturizer SPF 30 - $17.99
-
-**Cetaphil:**
-- Gentle Skin Cleanser - $13.99
-- Moisturizing Cream - $15.99
-- Daily Facial Moisturizer SPF 50 - $18.99
-
----
-
-## 👤 Admin Account
-
-**Email:** admin@brandsgalaxy.com  
-**Password:** admin123
-
----
-
-## 🎨 Theme Colors
-
-- **Gold Primary:** #FFD700
-- **Gold Dark:** #DAA520
-- **Gold Light:** #FFE55C
-- **Black:** #000000
-- **Dark Gray:** #1a1a1a
-- **Light Gray:** #2d2d2d
-
----
-
-## 🔧 Terminal Commands (Alternative to Tasks)
-
-If you prefer terminal:
+## Running locally
 
 **Backend:**
 ```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate          # Windows
-source venv/bin/activate       # Mac/Linux
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
+API: http://localhost:8000 — Swagger docs: http://localhost:8000/docs
 
 **Frontend:**
 ```bash
@@ -227,74 +116,24 @@ cd frontend
 npm install
 npm run dev
 ```
+http://localhost:3000
 
----
+Or use the VS Code tasks (`Ctrl+Shift+P` → `Tasks: Run Task`) defined in `.vscode/tasks.json` — includes a "Start Both Servers" task.
 
-## 📝 API Endpoints
+On backend startup, `main.py`'s lifespan hook runs `Base.metadata.create_all` and seeds the DB from `utils/seed.py` **only if the categories table is empty**. To (re)seed Korean-beauty products, run `backend/app/utils/seed_korean.py` or `backend/seed_kbeauty.py` manually.
 
-### Authentication
-- `POST /api/auth/register` - Register user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user
+## Deployment
 
-### Products
-- `GET /api/products` - Get all products
-  - Query params: `category`, `brand`, `search`, `min_price`, `max_price`, `is_featured`, `in_stock`, `sort_by`, `sort_order`
-- `GET /api/products/categories` - Get categories
-- `GET /api/products/brands` - Get brands
-- `GET /api/products/{id}` - Get product by ID
-- `POST /api/products` - Create product (Admin)
-- `PUT /api/products/{id}` - Update product (Admin)
-- `DELETE /api/products/{id}` - Delete product (Admin)
+- **Frontend**: Vercel, auto-detects Next.js from `frontend/` (`frontend/vercel.json` → `{"framework": "nextjs"}`; root `vercel.json` is intentionally empty).
+- **Backend**: Render, via `backend/Procfile` (`uvicorn app.main:app`). Python pinned to 3.11.9 (`backend/runtime.txt`) because some deps (Pillow, bcrypt) lack prebuilt wheels for newer Python versions on Render.
 
----
+## Key files by concern
 
-## 🚀 Next Steps
-
-1. ✅ Backend is running with sample data
-2. ✅ Test API at http://localhost:8000/docs
-3. 📝 Frontend pages need to be created:
-   - Homepage
-   - Product listing
-   - Product detail
-   - Shopping cart
-   - Checkout
-   - Admin dashboard
-
----
-
-## 🆘 Troubleshooting
-
-**Python not found?**
-- Install Python: https://www.python.org/downloads/
-- Make sure "Add to PATH" is checked during installation
-
-**Node.js not found?**
-- Install Node.js: https://nodejs.org/
-
-**VS Code tasks not working?**
-- Use terminal commands instead (see above)
-
-**Database not creating?**
-- Backend will auto-create `brands_galaxy.db` on first run
-- Check if backend is running without errors
-
----
-
-## 💡 Tips
-
-- **View API Documentation:** http://localhost:8000/docs
-- **Test APIs:** Use the Swagger UI at /docs
-- **Database:** SQLite file is created in backend folder
-- **Logs:** Check terminal output for errors
-
----
-
-## 🎯 Ready to Code!
-
-Everything is configured. Just:
-1. Open `brands-galaxy.code-workspace`
-2. Run the tasks
-3. Start coding!
-
-**Need help building frontend pages? Just ask!** 🚀
+| Concern | Files |
+|---|---|
+| Products | `backend/app/models/product.py`, `routes/products.py`, `schemas/product.py`, `frontend/src/app/products/**`, `frontend/src/components/ProductCard.js` |
+| Orders / checkout | `backend/app/models/order.py`, `routes/orders.py`, `frontend/src/app/checkout/page.js`, `frontend/src/app/orders/page.js`, `frontend/src/app/admin/orders/page.js` |
+| Auth | `backend/app/routes/auth.py`, `utils/auth.py`, `frontend/src/lib/store.js` (`useAuthStore`), `frontend/src/app/auth/**`, `frontend/src/lib/api.js` |
+| Admin | `frontend/src/app/admin/**` |
+| Seeding | `backend/app/utils/seed.py`, `seed_korean.py`, `backend/seed_kbeauty.py` |
+| Config/deploy | `backend/app/config.py`, `backend/Procfile`, `backend/runtime.txt`, `frontend/next.config.js`, `frontend/vercel.json` |
