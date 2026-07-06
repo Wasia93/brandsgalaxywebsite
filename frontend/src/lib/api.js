@@ -1,12 +1,17 @@
 import axios from 'axios';
 import { useAuthStore } from './store';
 
-// In a browser on the production site use relative URLs so the Next.js
-// rewrite proxy handles the request (avoids CORS entirely).
+// In production, always target the canonical www domain explicitly rather than
+// a relative URL. The bare domain (brandsgalaxy.store) 308-redirects to
+// www.brandsgalaxy.store for every path including /api/*, and browsers drop the
+// Authorization header on redirects that cross an origin boundary — so a
+// relative-URL call made while the page is on the bare domain silently loses
+// its auth header and gets rejected as unauthenticated. Hitting www directly
+// sidesteps that redirect entirely.
 // In local dev NEXT_PUBLIC_API_URL points at localhost:8000 directly.
 const API_BASE_URL =
   typeof window !== 'undefined' && process.env.NODE_ENV === 'production'
-    ? ''
+    ? 'https://www.brandsgalaxy.store'
     : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
