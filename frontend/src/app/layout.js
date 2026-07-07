@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
         <Navbar />
 
         {/* Trust Badges Bar */}
-        <div className="bg-gray-50 border-b border-gray-200">
+        <div className="bg-gray-50 border-b border-gray-200 pt-20">
           <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-center gap-6 md:gap-12 flex-wrap text-xs text-gray-500">
             <span className="flex items-center gap-1.5">
               <span className="text-green-600">✓</span> 100% Authentic Products

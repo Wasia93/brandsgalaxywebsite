@@ -36,7 +36,7 @@ function PremiumHero({ products }) {
   const h = HEADLINES[idx];
 
   return (
-    <section className="relative min-h-[92vh] bg-white overflow-hidden flex items-center">
+    <section className="relative min-h-0 lg:min-h-[92vh] bg-white overflow-hidden flex items-center py-12 lg:py-0">
 
       {/* Subtle background accents */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_10%_50%,_rgba(218,165,32,0.07)_0%,_transparent_65%)]" />

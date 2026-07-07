@@ -238,7 +238,7 @@ export default function CheckoutPage() {
                     </div>
                     <p className="text-sm text-gray-600">
                       Account Number:{' '}
-                      <span className="font-mono text-gray-900">{BANK_DETAILS.easypaisa.number}</span>
+                      <span className="font-mono text-gray-900 break-all">{BANK_DETAILS.easypaisa.number}</span>
                     </p>
                     <p className="text-sm text-gray-600">
                       Account Name:{' '}
@@ -253,7 +253,7 @@ export default function CheckoutPage() {
                     </div>
                     <p className="text-sm text-gray-600">
                       Account #:{' '}
-                      <span className="font-mono text-gray-900">{BANK_DETAILS.allied.accountNo}</span>
+                      <span className="font-mono text-gray-900 break-all">{BANK_DETAILS.allied.accountNo}</span>
                     </p>
                     <p className="text-sm text-gray-600">
                       Account Title:{' '}
@@ -452,12 +452,12 @@ function OrderSuccess({ order }) {
           <div className="space-y-3">
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
               <p className="text-xs font-semibold text-green-700 mb-1">🟢 Easypaisa</p>
-              <p className="text-sm text-gray-900 font-mono">{BANK_DETAILS.easypaisa.number}</p>
+              <p className="text-sm text-gray-900 font-mono break-all">{BANK_DETAILS.easypaisa.number}</p>
               <p className="text-xs text-gray-500">{BANK_DETAILS.easypaisa.name}</p>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-xs font-semibold text-blue-700 mb-1">🔵 Allied Bank (ABL)</p>
-              <p className="text-sm text-gray-900 font-mono">{BANK_DETAILS.allied.accountNo}</p>
+              <p className="text-sm text-gray-900 font-mono break-all">{BANK_DETAILS.allied.accountNo}</p>
               <p className="text-xs text-gray-500">Account Title: {BANK_DETAILS.allied.title}</p>
             </div>
           </div>
