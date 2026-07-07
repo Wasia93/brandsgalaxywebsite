@@ -15,6 +15,8 @@ function ProductImage({ images, name }) {
       <img
         src={getImageUrl(src)}
         alt={name}
+        loading="lazy"
+        decoding="async"
         className="w-full h-44 sm:h-56 object-cover relative z-10"
         onError={(e) => { e.target.style.display = 'none'; }}
       />
@@ -56,7 +58,9 @@ export default function ProductCard({ product }) {
   return (
     <>
       <Link href={`/products/${product.slug}`}>
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover group cursor-pointer shadow-sm">
+        <div
+          className="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover group cursor-pointer shadow-sm [content-visibility:auto] [contain-intrinsic-size:0_340px]"
+        >
           {/* Image */}
           <div className="relative bg-gray-50 h-44 sm:h-56 flex items-center justify-center overflow-hidden">
             <ProductImage images={product.images} name={product.name} />
