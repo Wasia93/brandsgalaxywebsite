@@ -2,16 +2,45 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 import KeepAlive from '@/components/KeepAlive';
+import { SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 
 export const metadata = {
-  title: 'Brands Galaxy — Luxury Cosmetics & Skincare',
-  description: 'Discover premium skincare and cosmetics from the world\'s most prestigious brands.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Brands Galaxy — Luxury Cosmetics & Skincare in Pakistan',
+    template: '%s | Brands Galaxy',
+  },
+  description: 'Shop 100% authentic luxury cosmetics, skincare & K-Beauty in Pakistan — MAC, CeraVe, Huda Beauty, ANUA, MEDICUBE & more. Free shipping over Rs. 5,000, Cash on Delivery.',
+  keywords: ['cosmetics Pakistan', 'skincare Pakistan', 'makeup online Pakistan', 'K-beauty Pakistan', 'MAC cosmetics', 'CeraVe Pakistan', 'ANUA', 'MEDICUBE', 'buy makeup online', 'authentic cosmetics Pakistan'],
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    siteName: 'Brands Galaxy',
+    title: 'Brands Galaxy — Luxury Cosmetics & Skincare in Pakistan',
+    description: 'Shop 100% authentic luxury cosmetics, skincare & K-Beauty in Pakistan. Free shipping over Rs. 5,000, Cash on Delivery.',
+    url: SITE_URL,
+    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Brands Galaxy' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Brands Galaxy — Luxury Cosmetics & Skincare in Pakistan',
+    description: 'Shop 100% authentic luxury cosmetics, skincare & K-Beauty in Pakistan.',
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-gray-900">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
+        />
         <KeepAlive />
         <Navbar />
 
