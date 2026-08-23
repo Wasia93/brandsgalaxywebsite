@@ -1,7 +1,6 @@
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
-import KeepAlive from '@/components/KeepAlive';
 import { SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 
 export const metadata = {
@@ -41,7 +40,6 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
         />
-        <KeepAlive />
         <Navbar />
 
         {/* Trust Badges Bar */}

@@ -1,5 +1,4 @@
 export const SITE_URL = 'https://www.brandsgalaxy.store';
-export const API_BASE_URL = 'https://brandsgalaxywebsite.onrender.com';
 
 export function absoluteImageUrl(path) {
   if (!path) return null;

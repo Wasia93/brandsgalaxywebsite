@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, User, LogOut, Menu, X, Heart, Package } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useCartStore, useAuthStore, useWishlistStore } from '@/lib/store';
+import { authAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
@@ -18,6 +19,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
+    authAPI.logout().catch(() => {});
     toast.success('Logged out');
     router.push('/');
   };

@@ -1,0 +1,4 @@
+.vercel
+.env*
+tsconfig.json
+next-env.d.ts

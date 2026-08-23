@@ -58,7 +58,6 @@ function ProductsContent() {
       .then((res) => { setProducts(res.data); setFetchError(false); setLoading(false); })
       .catch(() => {
         if (attempt < 2) {
-          // Auto-retry: 4s then 8s — gives Render cold-start time to wake up
           retryRef.current = setTimeout(() => fetchProducts(attempt + 1), (attempt + 1) * 4000);
         } else {
           setProducts([]);

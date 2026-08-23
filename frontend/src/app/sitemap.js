@@ -1,25 +1,16 @@
-import { API_BASE_URL, SITE_URL } from '@/lib/seo';
+import { supabase } from '@/lib/supabaseClient';
+import { SITE_URL } from '@/lib/seo';
 
 export const revalidate = 3600;
 
 async function getProducts() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/products/?limit=500`, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
+  const { data } = await supabase.from('products').select('slug, updated_at').eq('is_active', true).limit(500);
+  return data || [];
 }
 
 async function getCategories() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/products/categories`, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
+  const { data } = await supabase.from('categories').select('slug');
+  return data || [];
 }
 
 export default async function sitemap() {

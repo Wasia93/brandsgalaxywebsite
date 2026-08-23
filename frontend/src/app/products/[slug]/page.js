@@ -1,14 +1,10 @@
-import { API_BASE_URL, SITE_URL, absoluteImageUrl, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
+import { supabase } from '@/lib/supabaseClient';
+import { SITE_URL, absoluteImageUrl, productJsonLd, breadcrumbJsonLd } from '@/lib/seo';
 import ProductDetailClient from './ProductDetailClient';
 
 async function getProduct(slug) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/products/${slug}`, { next: { revalidate: 600 } });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
+  const { data } = await supabase.from('products').select('*').eq('slug', slug).maybeSingle();
+  return data || null;
 }
 
 export async function generateMetadata({ params }) {

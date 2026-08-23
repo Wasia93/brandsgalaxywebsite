@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from './supabaseClient';
 
 export const useCartStore = create(
   persist(
@@ -103,3 +104,15 @@ export const useAuthStore = create(
     { name: 'auth-storage' }
   )
 );
+
+// Keep the persisted { user, token } in sync with Supabase's own session —
+// covers session expiry, sign-out from another tab, and token refresh.
+if (typeof window !== 'undefined') {
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT') {
+      useAuthStore.getState().logout();
+    } else if (event === 'TOKEN_REFRESHED' && session) {
+      useAuthStore.setState({ token: session.access_token });
+    }
+  });
+}
