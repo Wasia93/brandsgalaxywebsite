@@ -8,12 +8,12 @@ import { getImageUrl } from '@/lib/utils';
 
 // Fixed hero collage cards
 const HERO_COLLAGE = [
-  { img: '/static/products/03aab1b255a44c0fae4f5daa99f102b4.webp', name: 'CeraVe Foaming Cleanser',         slug: 'cerave-foaming-facial-cleanser' },
-  { img: '/static/products/92004adc288247caab3af2b91694191b.webp', name: 'MAC Studio Fix Foundation',       slug: 'mac-studio-fix-fluid-foundation-spf15' },
-  { img: '/static/products/de8c3a333cef40a1918223b087cdbb46.png',  name: 'Olay Micro-Sculpting Cream',      slug: 'olay-regenerist-micro-sculpting-cream' },
-  { img: '/static/products/527ea96543144f7099607dc0a9df3261.png',  name: 'Neutrogena Zinc Sunscreen SPF 50', slug: 'neutrogena-sheer-zinc-mineral-sunscreen-spf50' },
-  { img: '/static/products/87e004015f9742a8a0c2acdf379b7592.png',  name: 'Olay Collagen Peptide 24 Serum',  slug: 'olay-collagen-peptide-24-serum' },
-  { img: '/static/products/cc7078a88e694da4854d44bd58b20324.png',  name: 'CeraVe Hyaluronic Acid Serum',    slug: 'cerave-hydrating-hyaluronic-acid-serum' },
+  { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/cerave-foaming-facial-cleanser-355ml-cosmetic-holic-1.webp?v=1740820856', name: 'CeraVe Foaming Cleanser',         slug: 'cerave-foaming-facial-cleanser-355ml' },
+  { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/mac-studio-fix-fluid-foundation-spf-15-cosmetic-holic-1.jpg?v=1707518770', name: 'MAC Studio Fix Foundation',       slug: 'mac-studio-fix-fluid-foundation-spf15' },
+  { img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/af6ddccb944740b48d3e7cdcb9a8c3af.png',  name: 'Olay Micro-Sculpting Cream',      slug: 'olay-regenerist-micro-sculpting-cream' },
+  { img: 'https://cdn.shopify.com/s/files/1/0733/2285/6745/files/0dfdf529-43b6-4743-bed9-a4735b446d07.jpg?v=1765488373', name: 'Neutrogena Zinc Sunscreen SPF 50', slug: 'neutrogena-sheer-zinc-dry-touch-sunscreen-spf50-88ml' },
+  { img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/51069c648a3f408b99a95b40922b6f7b.png',  name: 'Olay Collagen Peptide 24 Serum',  slug: 'olay-collagen-peptide-24-serum' },
+  { img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/125893c8713d43b39a1a9f2eb440cb62.png',  name: 'CeraVe Hyaluronic Acid Serum',    slug: 'cerave-hydrating-hyaluronic-acid-serum' },
 ];
 
 const HEADLINES = [
@@ -198,7 +198,7 @@ export default function HomePage() {
           <Link href="/products?category=makeup"
             className="group relative rounded-3xl overflow-hidden h-52 sm:h-64 md:h-72 bg-gradient-to-br from-rose-50 via-white to-white border border-rose-100 hover:border-rose-300 hover:shadow-lg transition-all duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(244,63,94,0.08)_0%,_transparent_60%)]" />
-            <img src={getImageUrl('/static/products/92004adc288247caab3af2b91694191b.webp')} alt="MAC Foundation"
+            <img src="https://cdn.shopify.com/s/files/1/0733/2285/6745/files/mac-studio-fix-fluid-foundation-spf-15-cosmetic-holic-1.jpg?v=1707518770" alt="MAC Foundation"
               className="absolute right-0 bottom-0 h-full w-1/2 object-cover object-center opacity-90 group-hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.style.display = 'none'; }} />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/75 to-transparent" />
@@ -376,25 +376,25 @@ export default function HomePage() {
           {[
             {
               name: 'Skincare', slug: 'skincare',
-              img: '/static/products/809b87cc44c843b194c7d2fc20192762.jpg',
+              img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/2c39492daa324d35bc216911210c6552.png',
               accent: 'text-blue-600', border: 'hover:border-blue-300',
               desc: 'Serums & creams',
             },
             {
               name: 'Face Care', slug: 'face-care',
-              img: '/static/products/347bcbe759544db0a9f56f6500055588.jpg',
+              img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/24bcec2d5efc41bbb508b51136024f45.png',
               accent: 'text-teal-600', border: 'hover:border-teal-300',
               desc: 'Cleansers & toners',
             },
             {
               name: 'Makeup', slug: 'makeup',
-              img: '/static/products/3d1f8c8031d247cb90b45b844428104a.jpg',
+              img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/b153784550934533ad8b63b1165d6673.webp',
               accent: 'text-rose-500', border: 'hover:border-rose-300',
               desc: 'Foundation & lips',
             },
             {
               name: 'Body Care', slug: 'body-care',
-              img: '/static/products/136a7a12833545faac7616bfab682045.jpg',
+              img: 'https://pgmpxeqtkwyupzbnbfds.supabase.co/storage/v1/object/public/products/6e3f54bb6cf74f67959258d07122d59e.webp',
               accent: 'text-emerald-600', border: 'hover:border-emerald-300',
               desc: 'Lotions & washes',
             },
@@ -437,16 +437,21 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           BOTTOM CTA BANNER
       ════════════════════════════════════════════ */}
-      <section className="relative w-full border-y border-gray-200">
-        <img
-          src={getImageUrl('/static/products/8115a2eaf7a7456ba44f27bc8d677735.jpeg')}
-          alt="Brands Galaxy Banner"
-          className="w-full block"
-          onError={(e) => { e.target.style.display = 'none'; }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-8 bg-gradient-to-t from-black/50 to-transparent pt-16">
+      <section className="relative w-full border-y border-gray-200 bg-gray-900 overflow-hidden py-16 sm:py-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_15%_50%,_rgba(218,165,32,0.25)_0%,_transparent_65%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_60%_at_85%_20%,_rgba(255,215,0,0.15)_0%,_transparent_60%)]" />
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center flex flex-col items-center gap-5">
+          <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-yellow-400 font-medium bg-yellow-400/10 border border-yellow-400/30 rounded-full px-4 py-1.5">
+            <BadgeCheck size={13} /> 100% Authentic Beauty
+          </span>
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
+            Discover Your Next <span className="gold-gradient">Favorite</span>
+          </h2>
+          <p className="text-gray-300 text-sm sm:text-base max-w-md">
+            160+ authentic products from MAC, CeraVe, Olay, ANUA & more — delivered across Pakistan.
+          </p>
           <Link href="/products"
-            className="btn-gold px-10 py-4 rounded-xl font-semibold text-base inline-flex items-center gap-2 shadow-xl">
+            className="btn-gold px-10 py-4 rounded-xl font-semibold text-base inline-flex items-center gap-2 shadow-xl mt-2">
             Explore Full Collection <ArrowRight size={18} />
           </Link>
         </div>
