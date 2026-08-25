@@ -32,14 +32,7 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckout = () => {
-    if (!token) {
-      toast.error('Please sign in to checkout');
-      router.push('/auth/login?next=/checkout');
-      return;
-    }
-    router.push('/checkout');
-  };
+  const handleCheckout = () => router.push('/checkout');
 
   if (items.length === 0) {
     return (
@@ -133,10 +126,10 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* Guest hint */}
+          {/* Guest reassurance */}
           {mounted && !token && (
-            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3 text-center">
-              You'll need to sign in to complete your purchase
+            <p className="text-xs text-green-600 bg-green-50 border border-green-200 rounded-lg px-3 py-2 mb-3 text-center">
+              ✓ No account needed — checkout as a guest
             </p>
           )}
 

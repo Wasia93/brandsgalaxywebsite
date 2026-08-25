@@ -10,6 +10,7 @@ import { useCartStore, useAuthStore } from '@/lib/store';
 import { formatPrice } from '@/lib/currency';
 import { getImageUrl } from '@/lib/utils';
 import api from '@/lib/api';
+import { supabase } from '@/lib/supabaseClient';
 import toast from 'react-hot-toast';
 
 const SHIPPING_KARACHI = 350;
@@ -32,9 +33,10 @@ const BANK_DETAILS = {
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, getSubtotal, clearCart } = useCartStore();
-  const { token, user } = useAuthStore();
+  const { token, user, setAuth } = useAuthStore();
 
   const [mounted, setMounted] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(null);
 
@@ -53,7 +55,23 @@ export default function CheckoutPage() {
     if (user?.full_name) setForm(f => ({ ...f, full_name: user.full_name }));
   }, [user]);
 
-  if (!mounted) return (
+  // Guests get a silent anonymous Supabase session so checkout doesn't
+  // require creating an account — this is what create_order()'s auth.uid()
+  // check needs. Registered users already have a token and skip this.
+  useEffect(() => {
+    if (token) { setAuthReady(true); return; }
+    supabase.auth.signInAnonymously().then(({ data, error }) => {
+      if (!error && data.session) {
+        setAuth({ id: data.user.id, is_anonymous: true }, data.session.access_token);
+      } else {
+        toast.error('Could not start checkout. Please sign in.');
+        router.push('/auth/login?next=/checkout');
+      }
+      setAuthReady(true);
+    });
+  }, [token]);
+
+  if (!mounted || !authReady) return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="h-6 w-28 bg-gray-100 rounded animate-pulse mb-8" />
       <div className="grid lg:grid-cols-2 gap-8">
@@ -66,10 +84,7 @@ export default function CheckoutPage() {
     </div>
   );
 
-  if (!token) {
-    router.push('/auth/login?next=/checkout');
-    return null;
-  }
+  if (!token) return null;
 
   if (items.length === 0 && !orderPlaced) {
     router.push('/cart');
